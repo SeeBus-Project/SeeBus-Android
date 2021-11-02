@@ -3,7 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_bus_route.xml" value="0.25364583333333335" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_select_bus.xml" value="0.25364583333333335" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_starting_point.xml" value="0.2390625" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_bus_route.xml" value="0.25364583333333335" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_select_bus.xml" value="0.25364583333333335" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_starting_point.xml" value="0.25364583333333335" />
       </map>
     </option>
   </component>
