@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SeeBus</string>
+    <string name="getStationByPos">http://ws.bus.go.kr/api/rest/stationinfo/getStationByPos?</string>
+    <string name="serviceKey">serviceKey=DOXYaa9D5JuNL%2Bq5nNQz6k7zfejF8nQ%2BSRtJXfMZWeyzory0LmZQconDuzhLotGg5ptaYH8AemeIRDo36TfQ%2BQ%3D%3D</string>
+    <string name="getStationByUid">http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?</string>
+    <string name="getStaionByRoute">http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?</string>
 </resources>
