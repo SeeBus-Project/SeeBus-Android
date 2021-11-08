@@ -10,8 +10,8 @@
         android:id="@+id/rv_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#333333"
+        android:background="@color/black"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/custom_history"
-        tools:layout_editor_absoluteX="1dp" />
+        tools:layout_editor_absoluteX="1dp"
+        tools:listitem="@layout/custom_history" />
 </androidx.constraintlayout.widget.ConstraintLayout>

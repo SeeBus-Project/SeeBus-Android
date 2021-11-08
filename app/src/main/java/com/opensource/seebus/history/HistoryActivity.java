@@ -33,6 +33,7 @@ public class HistoryActivity extends AppCompatActivity {
         loadRecentDB();
     }
 
+
     private void loadRecentDB() {
         // 저장되어있던 DB를 가져온다.
         mHistoryItems = mDBHelper.getHistory();

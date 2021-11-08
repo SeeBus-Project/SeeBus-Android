@@ -81,10 +81,31 @@ public class DBHelper extends SQLiteOpenHelper{
     // INSERT 문
     //public void InsertHistory(String _busNm, String _busRouteId, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
     public void InsertHistory(String _busNm, String _busRouteId, String _departureNm, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
-        SQLiteDatabase db = getWritableDatabase();
-        //db.execSQL("INSERT INTO History (busNm, busRouteId, departureNo, departureNm, destinationNo, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNo + "', '" + _departureNm + "', '" + _destinationNo + "', '" + _destinationNm + "');");
-        db.execSQL("INSERT INTO History (busNm, busRouteId, departureNm, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNm + "', '" + _destinationNm + "');");
-        db.close();
+        // 중복 검사
+        boolean isNotDuplicate = true; // 중복 여부 (중복되지 않는다. - true)
+        ArrayList<HistoryItem> historyItems = new ArrayList<>();
+        historyItems = getHistory();
+
+        for (int i = 0; i < historyItems.size(); i++) {
+            HistoryItem historyItem = historyItems.get(i);
+
+            if (_busNm.equals(historyItem.getBusNm()) && _departureNm.equals(historyItem.getDepartureNm()) && _destinationNm.equals(historyItem.getDestinationNm())) {
+                // 중복 데이터가 존재하면 db에 있는 중복 데이터 삭제하기 - 최근 이력 형식으로 만들 때 (순서가 바뀜.)
+                deleteHistory(historyItem.getId());
+
+                // 중복 데이터가 존재하면 db에 해당 데이터 삽입하지 않기 - 즐겨찾기 형식으로 만들 때 (순서가 바뀌지 않음.)
+                //isNotDuplicate = false;
+
+                break;
+            }
+        }
+
+        //if (isNotDuplicate) { // 중복 데이터가 존재하지 않으면 db에 해당 데이터 삽입하기 - 즐겨찾기 형식으로 만들 때 (최근 이력 형식으로 만들 때는 if랑 {, }만 지워주면 됨.)
+            SQLiteDatabase db = getWritableDatabase();
+            //db.execSQL("INSERT INTO History (busNm, busRouteId, departureNo, departureNm, destinationNo, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNo + "', '" + _departureNm + "', '" + _destinationNo + "', '" + _destinationNm + "');");
+            db.execSQL("INSERT INTO History (busNm, busRouteId, departureNm, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNm + "', '" + _destinationNm + "');");
+            db.close();
+        //}
     }
 
     // UPDATE 문
