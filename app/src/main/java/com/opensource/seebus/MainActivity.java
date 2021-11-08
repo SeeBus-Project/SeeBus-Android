@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.opensource.seebus.history.HistoryActivity;
 import com.opensource.seebus.startingPoint.StartingPointActivity;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,12 @@ public class MainActivity extends AppCompatActivity {
             startingPointIntent.putExtra("longitude",longitude);
             startingPointIntent.putExtra("latitude",latitude);
             startActivity(startingPointIntent);
+        });
+
+        Button historyButton=findViewById(R.id.historyButton);
+        historyButton.setOnClickListener(view -> {
+            Intent historyIntent= new Intent(this, HistoryActivity.class);
+            startActivity(historyIntent);
         });
 
 
