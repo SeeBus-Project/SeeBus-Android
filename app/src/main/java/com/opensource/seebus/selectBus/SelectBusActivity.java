@@ -112,6 +112,7 @@ public class SelectBusActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent busRouteActivity= new Intent(view.getContext(), BusRouteActivity.class);
+                busRouteActivity.putExtra("busNm", rtNm.get(position));//버스이름(번호)
                 busRouteActivity.putExtra("busRouteId",busRouteId.get(position));//버스노선Id
                 busRouteActivity.putExtra("adirection",adirection.get(position));//종점정거장
                 busRouteActivity.putExtra("nxtStn",nxtStn.get(position));//다음정거장
