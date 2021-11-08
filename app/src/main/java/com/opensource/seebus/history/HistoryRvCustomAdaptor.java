@@ -3,6 +3,7 @@ package com.opensource.seebus.history;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 
 import java.util.ArrayList;
@@ -71,8 +73,20 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
                         @Override
                         public void onClick(DialogInterface dialog, int position) {
                             if (position == 0) { // 안내시작
-                                // 안내시작 액티비티로 값 넘기고, ui도 넘어가기
-                                dialog.dismiss();
+                                //dialog.dismiss();
+
+                                Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
+
+                                // 출발지
+                                mainIntent.putExtra("departure",historyItem.getDepartureNm());
+                                //도착지
+                                mainIntent.putExtra("destination",historyItem.getDestinationNm());
+
+                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                                mContext.startActivity(mainIntent);
+
+                                Toast.makeText(mContext, "안내를 시작합니다.", Toast.LENGTH_SHORT).show();
                             }
                             else if (position == 1) { // 삭제하기
                                 // delete table
