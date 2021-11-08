@@ -38,9 +38,9 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
 
     @Override
     public void onBindViewHolder(@NonNull HistoryRvCustomAdaptor.ViewHolder holder, int position) {
-        holder.tv_busRouteId.setText(mHistoryItems.get(position).getBusRouteId());
-        holder.tv_departureNm.setText(mHistoryItems.get(position).getDepartureNm());
-        holder.tv_destinationNm.setText(mHistoryItems.get(position).getDestinationNm());
+        holder.tv_busNm.setText(mHistoryItems.get(position).getBusNm() + "번 버스");
+        holder.tv_departureNm.setText(mHistoryItems.get(position).getDepartureNm() + " 출발");
+        holder.tv_destinationNm.setText(mHistoryItems.get(position).getDestinationNm() + " 도착");
     }
 
     @Override
@@ -49,14 +49,14 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_busRouteId;
+        private TextView tv_busNm;
         private TextView tv_departureNm;
         private TextView tv_destinationNm;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tv_busRouteId = itemView.findViewById((R.id.tv_busRouteId));
+            tv_busNm = itemView.findViewById((R.id.tv_busNm));
             tv_departureNm = itemView.findViewById((R.id.tv_departureNm));
             tv_destinationNm = itemView.findViewById((R.id.tv_destinationNm));
 

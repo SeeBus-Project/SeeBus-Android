@@ -10,6 +10,9 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper{
+    // 현재 DB 테이블 (id, busNm, busRouteId, departureNm, destinationNm)
+    // --> (id, 버스 이름(번호), 버스 노선 id, 출발 정류소 이름, 도착 정류소 이름)
+
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "history.db";
 
@@ -25,8 +28,8 @@ public class DBHelper extends SQLiteOpenHelper{
         // history.db --> 데이터베이스
         // History --> 테이블
         // id, busRouteId, departureNo, departureNm, destinationNo, destinationNm --> 컬럼에 속함.
-        //db.execSQL("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT, busRouteId TEXT NOT NULL, departureNo TEXT NOT NULL, departureNm TEXT NOT NULL, destinationNo TEXT NOT NULL, destinationNm TEXT NOT NULL)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT, busRouteId TEXT NOT NULL, departureNm TEXT NOT NULL, destinationNm TEXT NOT NULL)");
+        //db.execSQL("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT, busNm TEXT NOT NULL, busRouteId TEXT NOT NULL, departureNo TEXT NOT NULL, departureNm TEXT NOT NULL, destinationNo TEXT NOT NULL, destinationNm TEXT NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT, busNm TEXT NOT NULL, busRouteId TEXT NOT NULL, departureNm TEXT NOT NULL, destinationNm TEXT NOT NULL)");
     }
 
     @Override
@@ -43,13 +46,14 @@ public class DBHelper extends SQLiteOpenHelper{
         // Cursor: 가라키는 것
         // 아래 쿼리문 해석
         // History 테이블에서 데이터를 모두(*) 가져온다(SELECT). id를 내림차순(DESC) 정렬해서(ORDER BY).
-        Cursor cursor = db.rawQuery("SELECT * FROM History ORDER BY busRouteId DESC", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM History ORDER BY id DESC", null);
 
         if(cursor.getCount() != 0) {
             // 조회할 데이터가 있을 때 내부 수정
             while (cursor.moveToNext()) { // 다음 데이터가 있을 때까지
                 // gerColumnIndex("컬럼명")
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String busNm = cursor.getString(cursor.getColumnIndex("busNm"));
                 String busRouteId = cursor.getString(cursor.getColumnIndex("busRouteId"));
                 //String departureNo = cursor.getString(cursor.getColumnIndex("departureNo"));
                 String departureNm = cursor.getString(cursor.getColumnIndex("departureNm"));
@@ -59,6 +63,7 @@ public class DBHelper extends SQLiteOpenHelper{
                 HistoryItem historyItem = new HistoryItem();
 
                 historyItem.setId(id);
+                historyItem.setBusNm(busNm);
                 historyItem.setBusRouteId(busRouteId);
                 //historyItem.setDepartureNo(departureNo);
                 historyItem.setDepartureNm(departureNm);
@@ -74,22 +79,22 @@ public class DBHelper extends SQLiteOpenHelper{
     }
 
     // INSERT 문
-    //public void InsertHistory(String _busRouteId, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
-    public void InsertHistory(String _busRouteId, String _departureNm, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
+    //public void InsertHistory(String _busNm, String _busRouteId, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
+    public void InsertHistory(String _busNm, String _busRouteId, String _departureNm, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
         SQLiteDatabase db = getWritableDatabase();
-        //db.execSQL("INSERT INTO History (busRouteId, departureNo, departureNm, destinationNo, destinationNm) VALUES('" + _busRouteId + "', '" + _departureNo + "', '" + _departureNm + "', '" + _destinationNo + "', '" + _destinationNm + "');");
-        db.execSQL("INSERT INTO History (busRouteId, departureNm, destinationNm) VALUES('" + _busRouteId + "', '" + _departureNm + "', '" + _destinationNm + "');");
+        //db.execSQL("INSERT INTO History (busNm, busRouteId, departureNo, departureNm, destinationNo, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNo + "', '" + _departureNm + "', '" + _destinationNo + "', '" + _destinationNm + "');");
+        db.execSQL("INSERT INTO History (busNm, busRouteId, departureNm, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNm + "', '" + _destinationNm + "');");
         db.close();
     }
 
     // UPDATE 문
-    //public void updateHistory(int _id, String _busRouteId, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) {
-    public void updateHistory(int _id, String _busRouteId, String _departureNm, String _destinationNm) {
+    //public void updateHistory(int _id, String _busNm, String _busRouteId, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) {
+    public void updateHistory(int _id, String _busNm, String _busRouteId, String _departureNm, String _destinationNm) {
         SQLiteDatabase db = getWritableDatabase();
         // WHERE: if문
         // id로 데이터를 넣을 위치 설정
-        //db.execSQL("UPDATE History SET busRouteId='" + _busRouteId + "', departureNo='" + _departureNo + "', departureNm='" + _departureNm + "', destinationNo='" + _destinationNo + "', destinationNm='" + _destinationNm + "'  WHERE id='" + _id + "'");
-        db.execSQL("UPDATE History SET busRouteId='" + _busRouteId + "', departureNm='" + _departureNm + "', destinationNm='" + _destinationNm + "'  WHERE id='" + _id + "'");
+        //db.execSQL("UPDATE History SET busNm='" + _busNm + "', busRouteId='" + _busRouteId + "', departureNo='" + _departureNo + "', departureNm='" + _departureNm + "', destinationNo='" + _destinationNo + "', destinationNm='" + _destinationNm + "'  WHERE id='" + _id + "'");
+        db.execSQL("UPDATE History SET busNm='" + _busNm + "', busRouteId='" + _busRouteId + "', departureNm='" + _departureNm + "', destinationNm='" + _destinationNm + "'  WHERE id='" + _id + "'");
         db.close();
     }
 

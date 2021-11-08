@@ -24,13 +24,13 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/tv_busRouteId"
+            android:id="@+id/tv_busNm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:padding="3dp"
-            android:text="버스 번호"
+            android:text="버스 이름"
             android:textColor="#FACF4F"
             android:textSize="30dp" />
 

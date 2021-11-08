@@ -2,7 +2,8 @@ package com.opensource.seebus.history;
 
 public class HistoryItem {
     private int id;                 // 히스토리의 고유 ID
-    private String busRouteId;     // 버스 노선 번호 (버스 번호)
+    private String busNm;           // 버스 이름(번호)
+    private String busRouteId;     // 버스 노선 번호
     //private String departureNo;     // 출발 정류장 번호
     private String departureNm;     // 출발 정류장 이름
     //private String destinationNo;   // 도착 정류장 번호
@@ -18,6 +19,10 @@ public class HistoryItem {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getBusNm() { return busNm; }
+
+    public void setBusNm(String busNm) { this.busNm = busNm; }
 
     public String getBusRouteId() {
         return busRouteId;

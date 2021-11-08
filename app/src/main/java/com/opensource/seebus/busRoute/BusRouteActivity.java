@@ -56,6 +56,7 @@ public class BusRouteActivity extends AppCompatActivity {
         mDBHelper = new DBHelper(this);
 
         Intent busRouteIntent=getIntent();
+        String busNm=busRouteIntent.getExtras().getString("busNm");
         String busRouteId=busRouteIntent.getExtras().getString("busRouteId");
         String adirection=busRouteIntent.getExtras().getString("adirection");
         String nxtStn=busRouteIntent.getExtras().getString("nxtStn");
@@ -145,7 +146,7 @@ public class BusRouteActivity extends AppCompatActivity {
                 mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
 
                 // history DB에 경로 insert 하기
-                mDBHelper.InsertHistory(busRouteId, departure, stationNm.get(memoryPosition+position-1));
+                mDBHelper.InsertHistory(busNm, busRouteId, departure, stationNm.get(memoryPosition+position-1));
 
                 Toast.makeText(getApplicationContext(),
                         "출발지 = " + departure +
