@@ -53,7 +53,7 @@ public class StartingPointActivity extends AppCompatActivity {
         List<String> dist=new ArrayList<>();        //거리
         List<String> stationId=new ArrayList<>();   //정거장아이디
         List<String> stationNm=new ArrayList<>();   //정거장이름
-        List<String> stationTp=new ArrayList<>();   //어떤버스인지 저상버스
+        List<String> stationTp=new ArrayList<>();   //어떤 버스인지 저상버스
 
         try {
 //            System.out.println(url);
@@ -92,6 +92,8 @@ public class StartingPointActivity extends AppCompatActivity {
 
         ListView listView=findViewById(R.id.startingPointListView);
         ArrayList<StartingPointListData> listViewData = new ArrayList<>();
+
+        // 정류장 갯수 10개로 고정정
         for (int i=0; i<stationNm.size() && i<10; i++)
         {
             StartingPointListData listData = new StartingPointListData();
@@ -101,7 +103,6 @@ public class StartingPointActivity extends AppCompatActivity {
 
             listViewData.add(listData);
         }
-
 
         ListAdapter oAdapter = new StartingPointCustomView(listViewData);
         listView.setAdapter(oAdapter);
