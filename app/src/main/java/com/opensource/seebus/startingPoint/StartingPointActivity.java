@@ -49,11 +49,12 @@ public class StartingPointActivity extends AppCompatActivity {
 
         String url = getString(R.string.getStationByPos)+getString(R.string.serviceKey)+
                 "&tmX="+longitude+"&tmY="+latitude+"&radius=1000";
-        List<String> arsId=new ArrayList<>();//정거장번호
-        List<String> dist=new ArrayList<>();//거리
-        List<String> stationId=new ArrayList<>();//정거장아이디
-        List<String> stationNm=new ArrayList<>();//정거장이름
-        List<String> stationTp=new ArrayList<>();//어떤버스인지 저상버스
+        List<String> arsId=new ArrayList<>();       //정거장번호
+        List<String> dist=new ArrayList<>();        //거리
+        List<String> stationId=new ArrayList<>();   //정거장아이디
+        List<String> stationNm=new ArrayList<>();   //정거장이름
+        List<String> stationTp=new ArrayList<>();   //어떤버스인지 저상버스
+
         try {
 //            System.out.println(url);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -91,7 +92,7 @@ public class StartingPointActivity extends AppCompatActivity {
 
         ListView listView=findViewById(R.id.startingPointListView);
         ArrayList<StartingPointListData> listViewData = new ArrayList<>();
-        for (int i=0; i<stationNm.size(); i++)
+        for (int i=0; i<stationNm.size() && i<10; i++)
         {
             StartingPointListData listData = new StartingPointListData();
 
