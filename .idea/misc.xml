@@ -3,17 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_bus_route.xml" value="0.25364583333333335" />
-        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
-        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_select_bus.xml" value="0.25364583333333335" />
-        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_starting_point.xml" value="0.2390625" />
-        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_bus_route.xml" value="0.25364583333333335" />
-        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_select_bus.xml" value="0.25364583333333335" />
-        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_starting_point.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/activity_bus_route.xml" value="0.1" />
+        <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/activity_gps.xml" value="0.33" />
+        <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/activity_select_bus.xml" value="0.1" />
+        <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/activity_starting_point.xml" value="0.1" />
+        <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/custom_bus_route.xml" value="0.1" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
