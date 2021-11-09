@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
+import com.opensource.seebus.history.DBHelper;
+import com.opensource.seebus.history.HistoryRvCustomAdaptor;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,12 +43,20 @@ public class BusRouteActivity extends AppCompatActivity {
     boolean flag=false;
     int memoryPosition=0;
 
+    // 즐겨찾기를 삽입하기 위해서 수정한 내용
+    private DBHelper mDBHelper;
+    private HistoryRvCustomAdaptor mHistoryAdaptor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_route);
 
+        // 즐겨찾기 삽입 위하여 수정한 내용
+        mDBHelper = new DBHelper(this);
+
         Intent busRouteIntent=getIntent();
+        String busNm=busRouteIntent.getExtras().getString("busNm");
         String busRouteId=busRouteIntent.getExtras().getString("busRouteId");
         String adirection=busRouteIntent.getExtras().getString("adirection");
         String nxtStn=busRouteIntent.getExtras().getString("nxtStn");
@@ -135,6 +145,9 @@ public class BusRouteActivity extends AppCompatActivity {
                 mainIntent.putExtra("departure",departure);
                 //도착지
                 mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
+
+                // history DB에 경로 insert 하기
+                mDBHelper.InsertHistory(busNm, busRouteId, departure, stationNm.get(memoryPosition+position-1));
 
                 Toast.makeText(getApplicationContext(),
                         "출발지 = " + departure +
