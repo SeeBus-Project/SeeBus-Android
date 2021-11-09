@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".selectBus.SelectBusActivity"
-    android:background="#333333">
+    android:background="#000000">
 
     <ListView
         android:id="@+id/selectBusListView"

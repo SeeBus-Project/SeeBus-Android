@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".busRoute.BusRouteActivity"
-    android:background="#333333">
+    android:background="#000000"
+    android:color="#FFFF00">
 
     <ListView
         android:id="@+id/busRouteListView"
