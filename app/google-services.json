@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "50122658840",
+    "project_id": "seebus-c501c",
+    "storage_bucket": "seebus-c501c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50122658840:android:dcc00141440445e58a1f6d",
+        "android_client_info": {
+          "package_name": "com.opensource.seebus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50122658840-714fcbb7vf296mvc6cp0end1jnop915g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.opensource.seebus",
+            "certificate_hash": "2ca7f14b9974ec49f59a1714c527c5de4f13c18e"
+          }
+        },
+        {
+          "client_id": "50122658840-70o3oh6jner5b9r7bkq2h1vtduge6t25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCab1gq5XIDZvawuwkAYuYvvtmSlKPwN-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50122658840-70o3oh6jner5b9r7bkq2h1vtduge6t25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

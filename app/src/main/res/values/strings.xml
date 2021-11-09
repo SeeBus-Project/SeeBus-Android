@@ -4,4 +4,7 @@
     <string name="serviceKey">serviceKey=DOXYaa9D5JuNL%2Bq5nNQz6k7zfejF8nQ%2BSRtJXfMZWeyzory0LmZQconDuzhLotGg5ptaYH8AemeIRDo36TfQ%2BQ%3D%3D</string>
     <string name="getStationByUid">http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?</string>
     <string name="getStaionByRoute">http://ws.bus.go.kr/api/rest/busRouteInfo/getStaionByRoute?</string>
+    <string name="msg_token_fmt">InstanceID Token: %s</string>
+    <string name="android_id">AndroidID: %s</string>
+    <string name="server_address">http://3.35.208.56/</string>
 </resources>
