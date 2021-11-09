@@ -7,21 +7,32 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.opensource.seebus.history.HistoryActivity;
+import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoRequestDto;
+import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoResponseDto;
+import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoService;
+import com.opensource.seebus.singletonRetrofit.SingletonRetrofit;
 import com.opensource.seebus.startingPoint.StartingPointActivity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,8 +42,12 @@ public class MainActivity extends AppCompatActivity {
     LocationManager lm;
 
     Button startingPointButton;
+    Button historyButton;
 
     private boolean onlySelfTestValue;
+
+    String firebaseToken;
+    String androidId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         startingPointButton = findViewById(R.id.startingPointButton);
+        historyButton=findViewById(R.id.historyButton);
         textViewGPS = findViewById(R.id.textViewGPS);
 
         onlySelfTestValue = onlySelfTest();
@@ -68,13 +84,36 @@ public class MainActivity extends AppCompatActivity {
                 goStartingPointActivity();
             }
         });
-    }
 
-        Button historyButton=findViewById(R.id.historyButton);
         historyButton.setOnClickListener(view -> {
             Intent historyIntent= new Intent(this, HistoryActivity.class);
             startActivity(historyIntent);
         });
+
+        // 안드로이드 아이디
+        androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        //푸시알림
+        //파이어베이스 토큰
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            showToast("토큰을 발급받는데 문제가 생겼습니다. 재설치 해주세요.");
+                            return;
+                        }
+
+                        // 토큰 가져오기
+                        firebaseToken = task.getResult();
+
+                        String firebaseToken_msg = getString(R.string.msg_token_fmt, firebaseToken);
+                        String androidId_msg=getString(R.string.android_id,androidId);
+                        showToast(firebaseToken_msg+"\n"+androidId_msg);
+                        sendDeviceInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+                    }
+                });
+    }
   
     private void goStartingPointActivity() {
         Intent startingPointIntent = new Intent(this, StartingPointActivity.class);
@@ -95,10 +134,17 @@ public class MainActivity extends AppCompatActivity {
     private void whenSelfTestValueIsTrue() {
         lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { return; }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
         // 퍼미션 체크용 (컴파일 하려면 있어야 함.. 의미는 없음)
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        //GPS_PROVIDER이 null일때 오류 발생해서 NETWORK_PROVIDER를 사용
+        if(location==null) {
+            location=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        }
         longitude = location.getLongitude();
         latitude = location.getLatitude();
         textViewGPS.setText(
@@ -132,6 +178,37 @@ public class MainActivity extends AppCompatActivity {
             );
         }
     };
+
+    private void sendDeviceInfo(Retrofit retrofit) {
+        SendDeviceInfoService sendDeviceInfoService=retrofit.create(SendDeviceInfoService.class);
+        Call<SendDeviceInfoResponseDto> call=sendDeviceInfoService.requestSendDevice(new SendDeviceInfoRequestDto(androidId,firebaseToken));
+
+        call.enqueue(new Callback<SendDeviceInfoResponseDto>() {
+
+            @Override
+            public void onResponse(Call<SendDeviceInfoResponseDto> call, Response<SendDeviceInfoResponseDto> response) {
+                SendDeviceInfoResponseDto device = response.body();
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setTitle("알림!");
+                dialog.setMessage("androidId = " + device.androidId +
+                        "\nfirebaseToken = " + device.firebaseToken +
+                        "\nid = " + device.id +
+                        "\n확인 링크 : " + getString(R.string.server_address) + "device"
+                );
+
+                dialog.show();
+            }
+
+            @Override
+            public void onFailure(Call<SendDeviceInfoResponseDto> call, Throwable t) {
+                Log.d("DEVELOP", t.toString());
+                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+                dialog.setTitle("알림!");
+                dialog.setMessage("통신에 실패했습니다.");
+                dialog.show();
+            }
+        });
+    }
 
     private void showToast(String string) {
         Toast toast = Toast.makeText(this,string,Toast.LENGTH_SHORT);
