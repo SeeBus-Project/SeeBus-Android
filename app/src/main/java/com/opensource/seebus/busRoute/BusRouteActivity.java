@@ -126,7 +126,8 @@ public class BusRouteActivity extends AppCompatActivity {
         textView.setText(adirection+" 방면");
         textView.setTextSize(40);
         textView.setGravity(Gravity.CENTER);
-        textView.setTextColor(Color.parseColor("#000000"));
+        textView.setTextColor(Color.parseColor("#FFFF00"));
+        textView.setClickable(true);
 
         listView.addHeaderView(textView);
         ListAdapter oAdapter = new BusRouteCustomView(listViewData);
