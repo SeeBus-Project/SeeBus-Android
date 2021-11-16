@@ -148,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
         longitude = location.getLongitude();
         latitude = location.getLatitude();
         textViewGPS.setText(
-                "위도 : " + longitude + "\n" +
-                        "경도 : " + latitude + "\n"
+                "위도 : " + latitude + "\n" +
+                        "경도 : " + longitude + "\n"
         );
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -173,8 +173,8 @@ public class MainActivity extends AppCompatActivity {
             longitude = location.getLongitude();
             latitude = location.getLatitude();
             textViewGPS.setText(
-                    "위도 : " + longitude + "\n" +
-                            "경도 : " + latitude + "\n"
+                    "위도 : " + latitude + "\n" +
+                            "경도 : " + longitude + "\n"
             );
         }
     };
