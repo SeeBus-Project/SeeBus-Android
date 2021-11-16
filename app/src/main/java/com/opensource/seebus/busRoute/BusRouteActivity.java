@@ -12,6 +12,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+// 소켓 통신 부분
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+//
+
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.history.DBHelper;
@@ -137,6 +143,8 @@ public class BusRouteActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
+
+
                 //TODO 팝업창 띄우기
                 //TODO 서버로 출발지와 목적지 보내기
                 //TODO 시간측정해서 1분전이면 푸시알림 보내기
@@ -145,6 +153,15 @@ public class BusRouteActivity extends AppCompatActivity {
                 mainIntent.putExtra("departure",departure);
                 //도착지
                 mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
+
+                //EC2 신호전달(TCP)
+                ClientThread thread = new ClientThread();
+                thread.data[0] = "in";
+                thread.data[1] = departure;
+                thread.data[2] = stationNm.get(memoryPosition + position - 1);
+                thread.getPort = 5000;
+                thread.start();
+
 
                 // history DB에 경로 insert 하기
                 mDBHelper.InsertHistory(busNm, busRouteId, departure, stationNm.get(memoryPosition+position-1));
@@ -159,4 +176,48 @@ public class BusRouteActivity extends AppCompatActivity {
             }
         });
     }
+
+    // TCP 쓰레드
+    class ClientThread extends Thread {
+        String data[] = new String[3];
+        int getPort;
+        @Override
+        public void run() {
+            String host2 = "183.101.12.31";
+            String host = "ec2-3-35-208-56.ap-northeast-2.compute.amazonaws.com";
+            try {
+                Socket socket = new Socket(host, getPort);
+
+                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream()); //소켓의 출력 스트림 참조
+                outstream.writeObject(data[0]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 출발정류장 전송
+                outstream.writeObject(data[1]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 도착정류장 전송
+                outstream.writeObject(data[2]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+
+
+                //ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
+                //String response = (String)instream.readObject();
+
+                //response = (String)instream.readObject();
+
+                outstream.close();
+                //instream.close();
+                socket.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
 }

@@ -9,13 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
+// 소켓 통신 부분
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+//
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
+import com.opensource.seebus.busRoute.BusRouteActivity;
 
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustomAdaptor.ViewHolder> {
@@ -75,20 +82,27 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
                             if (position == 0) { // 안내시작
                                 //dialog.dismiss();
 
-                                Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
+                                Intent mainIntent = new Intent(view.getContext(), MainActivity.class);
 
                                 // 출발지
-                                mainIntent.putExtra("departure",historyItem.getDepartureNm());
+                                mainIntent.putExtra("departure", historyItem.getDepartureNm());
                                 //도착지
-                                mainIntent.putExtra("destination",historyItem.getDestinationNm());
+                                mainIntent.putExtra("destination", historyItem.getDestinationNm());
+
+                                //EC2 통신 (TCP)
+                                ClientThread thread = new ClientThread();
+                                thread.data[0] = "in";
+                                thread.data[1] = historyItem.getDepartureNm();
+                                thread.data[2] = historyItem.getDestinationNm();
+                                thread.getPort = 5000;
+                                thread.start();
 
                                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
                                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
                                 mContext.startActivity(mainIntent);
 
                                 Toast.makeText(mContext, "안내를 시작합니다.", Toast.LENGTH_SHORT).show();
-                            }
-                            else if (position == 1) { // 삭제하기
+                            } else if (position == 1) { // 삭제하기
                                 // delete table
                                 int itemId = historyItem.getId();
                                 mDBHelper.deleteHistory(itemId);
@@ -107,11 +121,51 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
         }
     }
 
+    // TCP 통신 쓰레드
+    class ClientThread extends Thread {
+        String data[] = new String[3];
+        int getPort;
+
+        @Override
+        public void run() {
+            String host2 = "183.101.12.31";
+            String host = "ec2-3-35-208-56.ap-northeast-2.compute.amazonaws.com";
+            try {
+                Socket socket = new Socket(host, getPort);
+
+                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream()); //소켓의 출력 스트림 참조
+                outstream.writeObject(data[0]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 출발정류장 전송
+                outstream.writeObject(data[1]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 도착정류장 전송
+                outstream.writeObject(data[2]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+
+                //ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
+                //String response = (String)instream.readObject();
+
+                //response = (String)instream.readObject();
+
+                outstream.close();
+                //instream.close();
+                socket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     // 액티비티에서 호출되는 함수이며, 현재 어댑터에 새로운 히스토리를 전달받아 추가하는 목적이다.
     public void addItem(HistoryItem _item) {
         mHistoryItems.add(0, _item); // 최신 데이터가 가장 위로 오도록
         notifyItemInserted(0);
     }
-
 }
+
+
 
