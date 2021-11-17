@@ -132,7 +132,7 @@ public class BusRouteActivity extends AppCompatActivity implements View.OnClickL
         }
 
         TextView textView=new TextView(this);
-        textView.setText(adirection+" 방면");
+        textView.setText(adirection+" 방면 " + busNm +"번");
         textView.setTextSize(40);
         textView.setGravity(Gravity.CENTER);
         textView.setTextColor(Color.parseColor("#FFFF00"));
