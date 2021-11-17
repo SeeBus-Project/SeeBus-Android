@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
+import com.opensource.seebus.sendGuideExit.SendGuideExitRequestDto;
+import com.opensource.seebus.sendGuideExit.SendGuideExitService;
 import com.opensource.seebus.singletonRetrofit.SingletonRetrofit;
 
 import java.util.Timer;
@@ -63,16 +65,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
         // "안내 종료" 버튼 누르면 서버 전송 종료 후 홈화면으로 돌아가기
         bt_quitSendGpsInfo.setOnClickListener(view -> {
-            // 서버 전송 종료
-            if (timerTask != null) {
-                timerTask.cancel(); // timerTask.cancel()을 안하면 앱의 다른 화면으로 넘어가도 서버 전송이 종료되지 않음. --> 이용하면 앱 종료되어도 서버 전송 계속되도록 가능?
-            }
-
-            // 홈화면으로 돌아가기
-            Intent mainIntent = new Intent(this, MainActivity.class);
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
-            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
-            startActivity(mainIntent);
+            sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),timerTask);
         });
     }
 
@@ -139,6 +132,40 @@ public class SendGpsInfoActivity extends AppCompatActivity {
             public void onFailure(Call<Void> call, Throwable t) {
                 Log.d("SENDGPS", t.toString());
 
+                // 확인용 toast
+                Toast.makeText(getApplicationContext(), "실패(시스템)", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void sendGuideExit(Retrofit retrofit, TimerTask timerTask) {
+        SendGuideExitService sendGpsInfoService = retrofit.create(SendGuideExitService.class);
+        Call<Void> call = sendGpsInfoService.requestSendGps(new SendGuideExitRequestDto(androidId));
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) { // 정상적으로 통신 성공
+                    // 확인용 toast - 나중에 삭제 예정
+                    Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
+                    // 서버 전송 종료
+                    if (timerTask != null) {
+                        timerTask.cancel(); // timerTask.cancel()을 안하면 앱의 다른 화면으로 넘어가도 서버 전송이 종료되지 않음. --> 이용하면 앱 종료되어도 서버 전송 계속되도록 가능?
+                    }
+
+                    // 홈화면으로 돌아가기
+                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                    startActivity(mainIntent);
+                } else { // 통신 실패(응답 코드로 판단)
+                    // 확인용 toast - 나중에 삭제 예정
+                    Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
                 // 확인용 toast
                 Toast.makeText(getApplicationContext(), "실패(시스템)", Toast.LENGTH_SHORT).show();
             }

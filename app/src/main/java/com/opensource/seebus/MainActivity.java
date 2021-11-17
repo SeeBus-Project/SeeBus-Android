@@ -17,10 +17,12 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.opensource.seebus.busRoute.BusRouteActivity;
 import com.opensource.seebus.history.HistoryActivity;
 import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoRequestDto;
 import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoResponseDto;
 import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoService;
+import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
 import com.opensource.seebus.singletonRetrofit.SingletonRetrofit;
 import com.opensource.seebus.startingPoint.StartingPointActivity;
 
@@ -193,10 +195,17 @@ public class MainActivity extends AppCompatActivity {
                 dialog.setMessage("androidId = " + device.androidId +
                         "\nfirebaseToken = " + device.firebaseToken +
                         "\nid = " + device.id +
-                        "\n확인 링크 : " + getString(R.string.server_address) + "device"
+                        "\n확인 링크 : " + getString(R.string.server_address) + "device" +
+                        "\n도착여부 default=true : " + device.isArrived
                 );
 
                 dialog.show();
+                if(device.isArrived==false) {
+                    Intent gpsIntent = new Intent(getApplicationContext(), SendGpsInfoActivity.class);
+                    gpsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                    gpsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                    startActivity(gpsIntent);
+                }
             }
 
             @Override

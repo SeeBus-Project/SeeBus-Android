@@ -154,10 +154,6 @@ public class BusRouteActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
-                //TODO 팝업창 띄우기
-                //TODO 서버로 출발지와 목적지 보내기
-                //TODO 시간측정해서 1분전이면 푸시알림 보내기
-                //TODO 도착알림보내기
                 //출발지
                 mainIntent.putExtra("departure",departure);
                 //도착지
@@ -174,16 +170,7 @@ public class BusRouteActivity extends AppCompatActivity {
                 mStartArsId = departureNo;
 
                 sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
-
-/* // 나중에 필요없으면 삭제해주세요
-                Toast.makeText(getApplicationContext(),
-                        "출발지 = " + departure +
-                                "\n도착지 = " + stationNm.get(memoryPosition+position-1),
-                        Toast.LENGTH_SHORT).show();
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
-                startActivity(mainIntent);
-*/            }
+            }
         });
     }
 
@@ -218,7 +205,7 @@ public class BusRouteActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("SENDROUTE", t.toString());
+//                Log.d("SENDROUTE", t.toString());
 
                 // 확인용 toast
                 Toast.makeText(getApplicationContext(), "통신 실패 (시스템적인 이유로)", Toast.LENGTH_SHORT).show();
