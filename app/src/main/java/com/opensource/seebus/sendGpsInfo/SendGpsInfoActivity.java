@@ -1,8 +1,5 @@
 package com.opensource.seebus.sendGpsInfo;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +9,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,11 +17,14 @@ import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.sendGuideExit.SendGuideExitRequestDto;
 import com.opensource.seebus.sendGuideExit.SendGuideExitService;
-import com.opensource.seebus.singletonRetrofit.SingletonRetrofit;
+import com.opensource.seebus.singleton.SingletonRetrofit;
+import com.opensource.seebus.singleton.SingletonTimer;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,18 +53,22 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         whenSelfTestValueIsTrue(); // GPS 값 얻어오기
 
         // 5초마다 서버에 GpsInfo 보내기
-        Timer timer = new Timer();
+        Intent sendGpsInfoIntent=getIntent();
+        String isReboot=sendGpsInfoIntent.getStringExtra("isReboot");
+        Timer timer = SingletonTimer.getInstance(getApplicationContext());
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 SendGpsInfo(SingletonRetrofit.getInstance(getApplicationContext()));
             }
         };
-        timer.schedule(timerTask, 0, 5000); // 5초
+        if(isReboot.equals("No")) {
+            timer.schedule(timerTask, 0, 5000); // 5초
+        }
 
         // "안내 종료" 버튼 누르면 서버 전송 종료 후 홈화면으로 돌아가기
         bt_quitSendGpsInfo.setOnClickListener(view -> {
-            sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),timerTask);
+            sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),timer);
         });
     }
 
@@ -130,15 +133,13 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                Log.d("SENDGPS", t.toString());
-
                 // 확인용 toast
                 Toast.makeText(getApplicationContext(), "실패(시스템)", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void sendGuideExit(Retrofit retrofit, TimerTask timerTask) {
+    private void sendGuideExit(Retrofit retrofit, Timer timer) {
         SendGuideExitService sendGpsInfoService = retrofit.create(SendGuideExitService.class);
         Call<Void> call = sendGpsInfoService.requestSendGps(new SendGuideExitRequestDto(androidId));
 
@@ -149,9 +150,9 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     // 확인용 toast - 나중에 삭제 예정
                     Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
                     // 서버 전송 종료
-                    if (timerTask != null) {
-                        timerTask.cancel(); // timerTask.cancel()을 안하면 앱의 다른 화면으로 넘어가도 서버 전송이 종료되지 않음. --> 이용하면 앱 종료되어도 서버 전송 계속되도록 가능?
-                    }
+                    timer.cancel(); //타이머객체 없애주고
+                    SingletonTimer.singletonTimer=new Timer(); //새롭게 생성
+                    //이렇게 하면 timer객체는 단 한번만 생성된다.
 
                     // 홈화면으로 돌아가기
                     Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);

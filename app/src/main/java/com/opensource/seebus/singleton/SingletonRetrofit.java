@@ -1,4 +1,4 @@
-package com.opensource.seebus.singletonRetrofit;
+package com.opensource.seebus.singleton;
 
 import android.content.Context;
 
