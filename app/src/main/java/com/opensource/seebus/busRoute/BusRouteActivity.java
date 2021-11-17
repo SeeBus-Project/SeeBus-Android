@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,7 +41,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class BusRouteActivity extends AppCompatActivity {
+public class BusRouteActivity extends AppCompatActivity  implements View.OnClickListener {
 
     private static String getTagValue(String tag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
@@ -63,10 +64,18 @@ public class BusRouteActivity extends AppCompatActivity {
     private String mRtNm;
     private String mStartArsId;
 
+    private Button backBtn;
+    private Button homeBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_route);
+
+        backBtn=findViewById(R.id.busRouteBackBtn);
+        backBtn.setOnClickListener(this);
+        homeBtn=findViewById(R.id.busRouteHomeBtn);
+        homeBtn.setOnClickListener(this);
 
         // 즐겨찾기 삽입 위하여 수정한 내용
         mDBHelper = new DBHelper(this);
@@ -140,11 +149,12 @@ public class BusRouteActivity extends AppCompatActivity {
         }
 
         TextView textView=new TextView(this);
-        textView.setText(adirection+" 방면");
+        textView.setText(adirection+" 방면 " + busNm +"번");
         textView.setTextSize(40);
         textView.setGravity(Gravity.CENTER);
         textView.setTextColor(Color.parseColor("#FFFF00"));
         textView.setClickable(true);
+        textView.setFontFeatureSettings("R.font.font");
 
         listView.addHeaderView(textView);
         ListAdapter oAdapter = new BusRouteCustomView(listViewData);
@@ -217,5 +227,19 @@ public class BusRouteActivity extends AppCompatActivity {
                 startActivity(mainIntent);
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v==backBtn) {
+            onBackPressed();
+        }
+        else if (v==homeBtn) {
+
+            Intent mainIntent= new Intent(v.getContext(), MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+            startActivity(mainIntent);
+        }
     }
 }
