@@ -16,15 +16,19 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".history.HistoryActivity"
+            android:label="최근 기록"
             android:exported="true" />
         <activity
             android:name=".startingPoint.StartingPointActivity"
+            android:label="출발 정류장 선택"
             android:exported="false" />
         <activity
             android:name=".selectBus.SelectBusActivity"
+            android:label="탑승할 버스 선택"
             android:exported="false" />
         <activity
             android:name=".busRoute.BusRouteActivity"
+            android:label="도착 정류장 선택"
             android:exported="false" />
         <activity android:name=".MainActivity">
             <intent-filter>

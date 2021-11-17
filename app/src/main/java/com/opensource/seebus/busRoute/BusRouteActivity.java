@@ -7,6 +7,7 @@ import android.os.StrictMode;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class BusRouteActivity extends AppCompatActivity {
+public class BusRouteActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static String getTagValue(String tag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
@@ -47,10 +48,18 @@ public class BusRouteActivity extends AppCompatActivity {
     private DBHelper mDBHelper;
     private HistoryRvCustomAdaptor mHistoryAdaptor;
 
+    private Button backBtn;
+    private Button homeBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_route);
+
+        backBtn=findViewById(R.id.busRouteBackBtn);
+        backBtn.setOnClickListener(this);
+        homeBtn=findViewById(R.id.busRouteHomeBtn);
+        homeBtn.setOnClickListener(this);
 
         // 즐겨찾기 삽입 위하여 수정한 내용
         mDBHelper = new DBHelper(this);
@@ -158,5 +167,19 @@ public class BusRouteActivity extends AppCompatActivity {
                 startActivity(mainIntent);
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v==backBtn) {
+            onBackPressed();
+        }
+        else if (v==homeBtn) {
+
+            Intent mainIntent= new Intent(v.getContext(), MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+            startActivity(mainIntent);
+        }
     }
 }

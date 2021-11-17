@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textViewGPS;
     private double longitude;
     private double latitude;
+    private double accuracy;
     LocationManager lm;
 
     Button startingPointButton;
@@ -147,9 +148,11 @@ public class MainActivity extends AppCompatActivity {
         }
         longitude = location.getLongitude();
         latitude = location.getLatitude();
+        accuracy = location.getAccuracy();
         textViewGPS.setText(
                 "위도 : " + longitude + "\n" +
-                        "경도 : " + latitude + "\n"
+                        "경도 : " + latitude + "\n" +
+                        "Accuracy : " + accuracy + "\n"
         );
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -172,9 +175,11 @@ public class MainActivity extends AppCompatActivity {
         public void onLocationChanged(Location location) {
             longitude = location.getLongitude();
             latitude = location.getLatitude();
+            accuracy = location.getAccuracy();
             textViewGPS.setText(
                     "위도 : " + longitude + "\n" +
-                            "경도 : " + latitude + "\n"
+                            "경도 : " + latitude + "\n" +
+                            "Accuracy : " + accuracy + "\n"
             );
         }
     };
@@ -187,16 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call<SendDeviceInfoResponseDto> call, Response<SendDeviceInfoResponseDto> response) {
-                SendDeviceInfoResponseDto device = response.body();
-                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                dialog.setTitle("알림!");
-                dialog.setMessage("androidId = " + device.androidId +
-                        "\nfirebaseToken = " + device.firebaseToken +
-                        "\nid = " + device.id +
-                        "\n확인 링크 : " + getString(R.string.server_address) + "device"
-                );
 
-                dialog.show();
             }
 
             @Override

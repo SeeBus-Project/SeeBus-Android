@@ -4,8 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".selectBus.SelectBusActivity"
-    android:background="#000000">
+    android:orientation="vertical"
+    tools:context=".selectBus.SelectBusActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/selectBusBackBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:text="뒤로가기"/>
+
+        <Button
+            android:id="@+id/selectBusHomeBtn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="5dp"
+            android:text="처음으로"/>
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/selectBusListView"

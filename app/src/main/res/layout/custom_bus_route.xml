@@ -4,14 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#000000">
+    android:padding = "3dp">
 
     <TextView
         android:id="@+id/busRouteStation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="3dp"
-        android:textColor="#FFFF00"
         android:textSize="30dp"
         android:text="버스정거장">
     </TextView>
@@ -21,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="정거장번호"
-        android:textColor="#FFFF00">
+        android:text="정거장번호">
     </TextView>
 </LinearLayout>

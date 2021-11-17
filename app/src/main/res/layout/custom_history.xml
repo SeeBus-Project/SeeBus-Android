@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/black"
-    android:orientation="vertical"
-    android:padding="5dp">
+        android:orientation="vertical"
+        android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -17,7 +16,6 @@
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
         android:layout_marginBottom="1dp"
-        android:background="@color/black"
         android:orientation="vertical"
         android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -32,7 +30,6 @@
             android:layout_marginLeft="10dp"
             android:padding="3dp"
             android:text="버스 이름"
-            android:textColor="#FFFF00"
             android:textSize="30dp" />
 
         <TextView
@@ -43,7 +40,6 @@
             android:layout_marginLeft="10dp"
             android:padding="1dp"
             android:text="출발 정류소"
-            android:textColor="#FFFF00"
             android:textSize="20dp" />
 
         <TextView
@@ -54,7 +50,6 @@
             android:layout_marginLeft="10dp"
             android:padding="1dp"
             android:text="도착 정류소"
-            android:textColor="#FFFF00"
             android:textSize="20dp" />
 
     </LinearLayout>

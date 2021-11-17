@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.selectBus.SelectBusActivity;
 
@@ -24,7 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class StartingPointActivity extends AppCompatActivity {
+public class StartingPointActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static String getTagValue(String tag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
@@ -34,12 +36,20 @@ public class StartingPointActivity extends AppCompatActivity {
         return nValue.getNodeValue();
     }
 
+    private Button backBtn;
+    private Button homeBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starting_point);
 
-        Intent startingPointIntent=getIntent();
+        backBtn=findViewById(R.id.startingPointBackBtn);
+        backBtn.setOnClickListener(this);
+        homeBtn=findViewById(R.id.startingPointHomeBtn);
+        homeBtn.setOnClickListener(this);
+
+        Intent startingPointIntent = getIntent();
 
         double longitude=startingPointIntent.getDoubleExtra("longitude",0);
         double latitude=startingPointIntent.getDoubleExtra("latitude",0);
@@ -93,7 +103,7 @@ public class StartingPointActivity extends AppCompatActivity {
         ListView listView=findViewById(R.id.startingPointListView);
         ArrayList<StartingPointListData> listViewData = new ArrayList<>();
 
-        // 정류장 갯수 10개로 고정정
+        // 정류장 갯수 10개로 고정
         for (int i=0; i<stationNm.size() && i<10; i++)
         {
             StartingPointListData listData = new StartingPointListData();
@@ -117,5 +127,19 @@ public class StartingPointActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v==backBtn) {
+            onBackPressed();
+        }
+        else if (v==homeBtn) {
+
+            Intent mainIntent= new Intent(v.getContext(), MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+            startActivity(mainIntent);
+        }
     }
 }

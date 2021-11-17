@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
+import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.busRoute.BusRouteActivity;
 
@@ -24,7 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class SelectBusActivity extends AppCompatActivity {
+public class SelectBusActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static String getTagValue(String tag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
@@ -34,10 +36,18 @@ public class SelectBusActivity extends AppCompatActivity {
         return nValue.getNodeValue();
     }
 
+    private Button backBtn;
+    private Button homeBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_bus);
+
+        backBtn=findViewById(R.id.selectBusBackBtn);
+        backBtn.setOnClickListener(this);
+        homeBtn=findViewById(R.id.selectBusHomeBtn);
+        homeBtn.setOnClickListener(this);
 
         Intent selectBusIntent=getIntent();
         String arsId=selectBusIntent.getExtras().getString("arsId");
@@ -120,5 +130,18 @@ public class SelectBusActivity extends AppCompatActivity {
                 startActivity(busRouteActivity);
             }
         });
+    }
+    @Override
+    public void onClick(View v) {
+        if (v==backBtn) {
+            onBackPressed();
+        }
+        else if (v==homeBtn) {
+
+            Intent mainIntent= new Intent(v.getContext(), MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+            startActivity(mainIntent);
+        }
     }
 }
