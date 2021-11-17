@@ -137,6 +137,7 @@ public class BusRouteActivity extends AppCompatActivity implements View.OnClickL
         textView.setGravity(Gravity.CENTER);
         textView.setTextColor(Color.parseColor("#FFFF00"));
         textView.setClickable(true);
+        textView.setFontFeatureSettings("R.font.font");
 
         listView.addHeaderView(textView);
         ListAdapter oAdapter = new BusRouteCustomView(listViewData);
