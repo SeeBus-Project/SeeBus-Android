@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,7 +18,10 @@ import android.widget.Toast;
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.history.DBHelper;
-import com.opensource.seebus.history.HistoryRvCustomAdaptor;
+import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
+import com.opensource.seebus.sendRouteInfo.SendRouteInfoRequestDto;
+import com.opensource.seebus.sendRouteInfo.SendRouteInfoService;
+import com.opensource.seebus.singletonRetrofit.SingletonRetrofit;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,7 +36,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class BusRouteActivity extends AppCompatActivity implements View.OnClickListener{
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
+public class BusRouteActivity extends AppCompatActivity  implements View.OnClickListener {
 
     private static String getTagValue(String tag, Element eElement) {
         NodeList nlList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
@@ -46,7 +56,13 @@ public class BusRouteActivity extends AppCompatActivity implements View.OnClickL
 
     // 즐겨찾기를 삽입하기 위해서 수정한 내용
     private DBHelper mDBHelper;
-    private HistoryRvCustomAdaptor mHistoryAdaptor;
+
+    // 서버에게 경로 정보 전송
+    private String mAndroidId;
+    private String mDestinationArsId;
+    private String mDestinationName;
+    private String mRtNm;
+    private String mStartArsId;
 
     private Button backBtn;
     private Button homeBtn;
@@ -70,6 +86,7 @@ public class BusRouteActivity extends AppCompatActivity implements View.OnClickL
         String adirection=busRouteIntent.getExtras().getString("adirection");
         String nxtStn=busRouteIntent.getExtras().getString("nxtStn");
         String departure=busRouteIntent.getExtras().getString("departure");
+        String departureNo=busRouteIntent.getExtras().getString("departureNo");
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -147,22 +164,64 @@ public class BusRouteActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
-                //TODO 팝업창 띄우기
-                //TODO 서버로 출발지와 목적지 보내기
-                //TODO 시간측정해서 1분전이면 푸시알림 보내기
-                //TODO 도착알림보내기
                 //출발지
                 mainIntent.putExtra("departure",departure);
                 //도착지
                 mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
 
-                // history DB에 경로 insert 하기
+                // history DB에 경로 insert 하기 - 수정 예정
                 mDBHelper.InsertHistory(busNm, busRouteId, departure, stationNm.get(memoryPosition+position-1));
 
-                Toast.makeText(getApplicationContext(),
-                        "출발지 = " + departure +
-                                "\n도착지 = " + stationNm.get(memoryPosition+position-1),
-                        Toast.LENGTH_SHORT).show();
+                // 서버에 RouteInfo 보내기
+                mAndroidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                mDestinationArsId = stationNo.get(memoryPosition+position-1);
+                mDestinationName = stationNm.get(memoryPosition+position-1);
+                mRtNm = busNm;
+                mStartArsId = departureNo;
+
+                sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+            }
+        });
+    }
+
+    private void sendRouteInfo(Retrofit retrofit) {
+        SendRouteInfoService sendRouteInfoService = retrofit.create(SendRouteInfoService.class);
+        Call<Void> call = sendRouteInfoService.requestSendRoute(new SendRouteInfoRequestDto(mAndroidId, mDestinationArsId, mDestinationName, mRtNm, mStartArsId));
+
+        call.enqueue(new Callback<Void>() {
+
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) { // 정상적으로 통신 성공
+                    // 확인용 toast
+                    Toast.makeText(getApplicationContext(), "통신 성공", Toast.LENGTH_SHORT).show();
+
+                    // SendGpsInfoActivity로 넘어가기
+                    Intent gpsIntent = new Intent(BusRouteActivity.this, SendGpsInfoActivity.class);
+                    gpsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                    gpsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                    startActivity(gpsIntent);
+                } else { // 통신 실패(응답 코드로 판단)
+                    // 확인용 toast
+                    Toast.makeText(getApplicationContext(), "통신 실패 (응답 코드: 3xx, 4xx 등)", Toast.LENGTH_SHORT).show();
+
+                    // MainActivity로 돌아가기
+                    Intent mainIntent = new Intent(BusRouteActivity.this, MainActivity.class);
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                    startActivity(mainIntent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+//                Log.d("SENDROUTE", t.toString());
+
+                // 확인용 toast
+                Toast.makeText(getApplicationContext(), "통신 실패 (시스템적인 이유로)", Toast.LENGTH_SHORT).show();
+
+                // MainActivity로 돌아가기
+                Intent mainIntent = new Intent(BusRouteActivity.this, MainActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
                 startActivity(mainIntent);

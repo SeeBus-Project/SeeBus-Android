@@ -127,6 +127,7 @@ public class SelectBusActivity extends AppCompatActivity implements View.OnClick
                 busRouteActivity.putExtra("adirection",adirection.get(position));//종점정거장
                 busRouteActivity.putExtra("nxtStn",nxtStn.get(position));//다음정거장
                 busRouteActivity.putExtra("departure",departure);//출발정거장 이름
+                busRouteActivity.putExtra("departureNo", arsId); // 출발정거장 Id
                 startActivity(busRouteActivity);
             }
         });
