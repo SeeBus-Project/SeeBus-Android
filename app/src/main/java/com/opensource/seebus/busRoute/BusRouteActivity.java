@@ -2,10 +2,10 @@ package com.opensource.seebus.busRoute;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,7 +21,7 @@ import com.opensource.seebus.history.DBHelper;
 import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
 import com.opensource.seebus.sendRouteInfo.SendRouteInfoRequestDto;
 import com.opensource.seebus.sendRouteInfo.SendRouteInfoService;
-import com.opensource.seebus.singletonRetrofit.SingletonRetrofit;
+import com.opensource.seebus.singleton.SingletonRetrofit;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,7 +35,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -154,7 +153,9 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
         textView.setGravity(Gravity.CENTER);
         textView.setTextColor(Color.parseColor("#FFFF00"));
         textView.setClickable(true);
-        textView.setFontFeatureSettings("R.font.font");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            textView.setFontFeatureSettings(String.valueOf(R.font.font));
+        }
 
         listView.addHeaderView(textView);
         ListAdapter oAdapter = new BusRouteCustomView(listViewData);
@@ -200,6 +201,7 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                     Intent gpsIntent = new Intent(BusRouteActivity.this, SendGpsInfoActivity.class);
                     gpsIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
                     gpsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                    gpsIntent.putExtra("isReboot","No");
                     startActivity(gpsIntent);
                 } else { // 통신 실패(응답 코드로 판단)
                     // 확인용 toast
