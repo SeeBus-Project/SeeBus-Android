@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
@@ -25,6 +26,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import androidx.appcompat.app.AppCompatActivity;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class StartingPointActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -38,6 +42,7 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
 
     private Button backBtn;
     private Button homeBtn;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,8 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
         backBtn.setOnClickListener(this);
         homeBtn=findViewById(R.id.startingPointHomeBtn);
         homeBtn.setOnClickListener(this);
+        progressBar=findViewById(R.id.startingPointProgressBar);
+        ListView listView=findViewById(R.id.startingPointListView);
 
         Intent startingPointIntent = getIntent();
 
@@ -57,7 +64,7 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        String url = getString(R.string.getStationByPos)+getString(R.string.serviceKey)+
+        String getStationsByPosListUrl = getString(R.string.getStationByPos)+getString(R.string.serviceKey)+
                 "&tmX="+longitude+"&tmY="+latitude+"&radius=1000";
         List<String> arsId=new ArrayList<>();       //정거장번호
         List<String> dist=new ArrayList<>();        //거리
@@ -65,57 +72,93 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
         List<String> stationNm=new ArrayList<>();   //정거장이름
         List<String> stationTp=new ArrayList<>();   //어떤 버스인지 저상버스
 
-        try {
-//            System.out.println(url);
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(url);
+        List<String> nextStationName=new ArrayList<>();
 
-            doc.getDocumentElement().normalize();
-//            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
-            NodeList nList = doc.getElementsByTagName("itemList");
+        progressBar.setVisibility(View.VISIBLE);
+        Observable.fromCallable(()->{
+            try {
+    //            System.out.println(url);
+                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                Document doc = dBuilder.parse(getStationsByPosListUrl);
 
-            for(int temp = 0; temp < nList.getLength(); temp++){
-                Node nNode = nList.item(temp);
-                if(nNode.getNodeType() == Node.ELEMENT_NODE){
+                doc.getDocumentElement().normalize();
+    //            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+                NodeList nList = doc.getElementsByTagName("itemList");
 
-                    Element eElement = (Element) nNode;
-//                    System.out.println("######################");
-//                    System.out.println(eElement.getTextContent());
-//                    System.out.println("정류소고유번호 : " + getTagValue("arsId", eElement));
-//                    System.out.println("거리 : " + getTagValue("dist", eElement));
-//                    System.out.println("정류소 ID : " + getTagValue("stationId", eElement));
-//                    System.out.println("정류소명 : " + getTagValue("stationNm", eElement));
-//                    System.out.println("정류소타입 : " + getTagValue("stationTp", eElement));
-                    arsId.add(getTagValue("arsId",eElement));
-                    dist.add(getTagValue("dist",eElement));
-                    stationId.add(getTagValue("stationId",eElement));
-                    stationNm.add(getTagValue("stationNm",eElement));
-                    stationTp.add(getTagValue("stationTp",eElement));
+                for(int temp = 0; temp < nList.getLength(); temp++){
+                    Node nNode = nList.item(temp);
+                    if(nNode.getNodeType() == Node.ELEMENT_NODE){
+
+                        Element eElement = (Element) nNode;
+    //                    System.out.println("######################");
+    //                    System.out.println(eElement.getTextContent());
+    //                    System.out.println("정류소고유번호 : " + getTagValue("arsId", eElement));
+    //                    System.out.println("거리 : " + getTagValue("dist", eElement));
+    //                    System.out.println("정류소 ID : " + getTagValue("stationId", eElement));
+    //                    System.out.println("정류소명 : " + getTagValue("stationNm", eElement));
+    //                    System.out.println("정류소타입 : " + getTagValue("stationTp", eElement));
+                        arsId.add(getTagValue("arsId",eElement));
+                        dist.add(getTagValue("dist",eElement));
+                        stationId.add(getTagValue("stationId",eElement));
+                        stationNm.add(getTagValue("stationNm",eElement));
+                        stationTp.add(getTagValue("stationTp",eElement));
+                    }
                 }
+
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("오류입니다.");
             }
 
-        } catch(Exception e) {
-            e.printStackTrace();
-            System.out.println("오류입니다.");
-        }
+            try {
+                for(int i=0;i<arsId.size();i++) {
+                    String getStationByUidItemUrl = getString(R.string.getStationByUid) + getString(R.string.serviceKey) +
+                            "&arsId=" + arsId.get(i);
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(getStationByUidItemUrl);
 
-        ListView listView=findViewById(R.id.startingPointListView);
-        ArrayList<StartingPointListData> listViewData = new ArrayList<>();
+                    doc.getDocumentElement().normalize();
+    //                System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+                    NodeList nList = doc.getElementsByTagName("itemList");
 
-        // 정류장 갯수 10개로 고정
-        for (int i=0; i<stationNm.size() && i<10; i++)
-        {
-            StartingPointListData listData = new StartingPointListData();
+                    Node nNode = nList.item(0);
+                    if(nNode.getNodeType() == Node.ELEMENT_NODE){
 
-            listData.station = stationNm.get(i);
-            listData.distAndStationNumber = dist.get(i)+ "m | " +arsId.get(i);
+                        Element eElement = (Element) nNode;
+    //                    System.out.println("######################");
+    //                    System.out.println(eElement.getTextContent());
+    //                    System.out.println("다음 정류장 : " + getTagValue("nxtStn",eElement));
+                        nextStationName.add(getTagValue("nxtStn",eElement));
+                    }
 
-            listViewData.add(listData);
-        }
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+                System.out.println("오류입니다.");
+            }
+            return false;
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((result)->{
+                    ArrayList<StartingPointListData> listViewData = new ArrayList<>();
 
-        ListAdapter oAdapter = new StartingPointCustomView(listViewData);
-        listView.setAdapter(oAdapter);
+                    // 정류장 갯수 10개로 고정
+                    for (int i=0; i<stationNm.size() && i<10; i++) {
+                        StartingPointListData listData = new StartingPointListData();
+
+                        listData.station = stationNm.get(i);
+                        listData.distAndStationNumberAndNextStationName =
+                                dist.get(i)+ "m | " +arsId.get(i)+" | "+nextStationName.get(i);
+
+                        listViewData.add(listData);
+                    }
+                    ListAdapter oAdapter = new StartingPointCustomView(listViewData);
+                    listView.setAdapter(oAdapter);
+                    progressBar.setVisibility(View.GONE);
+                });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

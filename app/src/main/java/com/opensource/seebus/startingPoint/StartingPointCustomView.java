@@ -57,7 +57,7 @@ public class StartingPointCustomView extends BaseAdapter {
         TextView distAndStationNumber = convertView.findViewById(R.id.distAndStationNumber);
 
         station.setText(listViewData.get(position).station);
-        distAndStationNumber.setText(listViewData.get(position).distAndStationNumber);
+        distAndStationNumber.setText(listViewData.get(position).distAndStationNumberAndNextStationName);
 
         return convertView;
     }
