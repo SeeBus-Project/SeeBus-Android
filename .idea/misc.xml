@@ -21,8 +21,12 @@
         <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/custom_history.xml" value="0.21354166666666666" />
         <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/custom_select_bus.xml" value="0.2046875" />
         <entry key="..\:/Users/PWork/Desktop/[pj]OpneSource_SeeBus/SeeBus-Android/app/src/main/res/layout/custom_starting_point.xml" value="0.12817028985507245" />
+        <entry key="..\:/Users/admin/AndroidStudioProjects/SeeBus/app/src/main/res/layout/activity_favorite.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/admin/AndroidStudioProjects/SeeBus/app/src/main/res/layout/activity_history.xml" value="0.36614583333333334" />
         <entry key="..\:/Users/admin/AndroidStudioProjects/SeeBus/app/src/main/res/layout/activity_main.xml" value="0.36614583333333334" />
         <entry key="..\:/Users/admin/AndroidStudioProjects/SeeBus/app/src/main/res/layout/activity_send_gps_info.xml" value="0.33" />
+        <entry key="..\:/Users/admin/AndroidStudioProjects/SeeBus/app/src/main/res/layout/custom_favorite.xml" value="0.12777777777777777" />
+        <entry key="..\:/Users/admin/AndroidStudioProjects/SeeBus/app/src/main/res/layout/custom_history.xml" value="0.12777777777777777" />
       </map>
     </option>
   </component>
