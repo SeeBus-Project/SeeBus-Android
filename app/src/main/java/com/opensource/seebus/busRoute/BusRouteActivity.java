@@ -170,16 +170,17 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 //도착지
                 mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
 
-                // history DB에 경로 insert 하기 - 수정 예정
-                mDBHelper.InsertHistory(busNm, busRouteId, departure, stationNm.get(memoryPosition+position-1));
-
-                // 서버에 RouteInfo 보내기
+                // 데이터 할당
                 mAndroidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                 mDestinationArsId = stationNo.get(memoryPosition+position-1);
                 mDestinationName = stationNm.get(memoryPosition+position-1);
                 mRtNm = busNm;
                 mStartArsId = departureNo;
 
+                // history DB에 경로 insert 하기
+                mDBHelper.InsertHistory(mRtNm, mStartArsId, departure, mDestinationArsId, mDestinationName);
+
+                // 서버에 데이터 보내기
                 sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
             }
         });

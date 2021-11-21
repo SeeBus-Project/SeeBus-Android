@@ -10,10 +10,10 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class DBHelper extends SQLiteOpenHelper{
-    // 현재 DB 테이블 (id, busNm, busRouteId, departureNm, destinationNm)
-    // --> (id, 버스 이름(번호), 버스 노선 id, 출발 정류소 이름, 도착 정류소 이름)
+    // 현재 DB 테이블 (id, busNm, departureNo, departureNm, destinationNo, destinationNm)
+    // --> (id, 버스 이름(번호), 출발 정류소 번호, 출발 정류소 이름, 도착 정류소 번호, 도착 정류소 이름)
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2; // 버전 2로 업데이트
     private static final String DB_NAME = "history.db";
 
     public DBHelper(@Nullable Context context) {
@@ -22,14 +22,11 @@ public class DBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // 데이터 베이스가 생성이 될 때 호출
         // 데이터베이스 -> 테이블 -> 컬럼 -> 값
-        // TEXT: String이라고 생각, NOT NULL: 여기에는 데이터가 반드시 있어야 해.
         // history.db --> 데이터베이스
         // History --> 테이블
-        // id, busRouteId, departureNo, departureNm, destinationNo, destinationNm --> 컬럼에 속함.
-        //db.execSQL("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT, busNm TEXT NOT NULL, busRouteId TEXT NOT NULL, departureNo TEXT NOT NULL, departureNm TEXT NOT NULL, destinationNo TEXT NOT NULL, destinationNm TEXT NOT NULL)");
-        db.execSQL("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT, busNm TEXT NOT NULL, busRouteId TEXT NOT NULL, departureNm TEXT NOT NULL, destinationNm TEXT NOT NULL)");
+        // id, busNm, departureNo, departureNm, destinationNo, destinationNm --> 컬럼
+        db.execSQL("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY AUTOINCREMENT, busNm TEXT NOT NULL, departureNo TEXT NOT NULL, departureNm TEXT NOT NULL, destinationNo TEXT NOT NULL, destinationNm TEXT NOT NULL)");
     }
 
     @Override
@@ -54,20 +51,18 @@ public class DBHelper extends SQLiteOpenHelper{
                 // gerColumnIndex("컬럼명")
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
                 String busNm = cursor.getString(cursor.getColumnIndex("busNm"));
-                String busRouteId = cursor.getString(cursor.getColumnIndex("busRouteId"));
-                //String departureNo = cursor.getString(cursor.getColumnIndex("departureNo"));
+                String departureNo = cursor.getString(cursor.getColumnIndex("departureNo"));
                 String departureNm = cursor.getString(cursor.getColumnIndex("departureNm"));
-                //String destinationNo = cursor.getString(cursor.getColumnIndex("destinationNo"));
+                String destinationNo = cursor.getString(cursor.getColumnIndex("destinationNo"));
                 String destinationNm = cursor.getString(cursor.getColumnIndex("destinationNm"));
 
                 HistoryItem historyItem = new HistoryItem();
 
                 historyItem.setId(id);
                 historyItem.setBusNm(busNm);
-                historyItem.setBusRouteId(busRouteId);
-                //historyItem.setDepartureNo(departureNo);
+                historyItem.setDepartureNo(departureNo);
                 historyItem.setDepartureNm(departureNm);
-                //historyItem.setDestinationNo(destinationNo);
+                historyItem.setDestinationNo(destinationNo);
                 historyItem.setDestinationNm(destinationNm);
 
                 historyItems.add(historyItem);
@@ -79,8 +74,7 @@ public class DBHelper extends SQLiteOpenHelper{
     }
 
     // INSERT 문
-    //public void InsertHistory(String _busNm, String _busRouteId, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
-    public void InsertHistory(String _busNm, String _busRouteId, String _departureNm, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
+    public void InsertHistory(String _busNm, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) { // id는 AUTOINCREMENT로 자동으로 넣어주니까 Insert에서 넣어둘 필요X
         // 중복 검사
         boolean isNotDuplicate = true; // 중복 여부 (중복되지 않는다. - true)
         ArrayList<HistoryItem> historyItems = new ArrayList<>();
@@ -102,20 +96,17 @@ public class DBHelper extends SQLiteOpenHelper{
 
         //if (isNotDuplicate) { // 중복 데이터가 존재하지 않으면 db에 해당 데이터 삽입하기 - 즐겨찾기 형식으로 만들 때 (최근 이력 형식으로 만들 때는 if랑 {, }만 지워주면 됨.)
             SQLiteDatabase db = getWritableDatabase();
-            //db.execSQL("INSERT INTO History (busNm, busRouteId, departureNo, departureNm, destinationNo, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNo + "', '" + _departureNm + "', '" + _destinationNo + "', '" + _destinationNm + "');");
-            db.execSQL("INSERT INTO History (busNm, busRouteId, departureNm, destinationNm) VALUES('" + _busNm + "', '" + _busRouteId + "', '" + _departureNm + "', '" + _destinationNm + "');");
+            db.execSQL("INSERT INTO History (busNm, departureNo, departureNm, destinationNo, destinationNm) VALUES('" + _busNm + "', '" + _departureNo + "', '" + _departureNm + "', '" + _destinationNo + "', '" + _destinationNm + "');");
             db.close();
         //}
     }
 
     // UPDATE 문
-    //public void updateHistory(int _id, String _busNm, String _busRouteId, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) {
-    public void updateHistory(int _id, String _busNm, String _busRouteId, String _departureNm, String _destinationNm) {
+    public void updateHistory(int _id, String _busNm, String _departureNo, String _departureNm, String _destinationNo, String _destinationNm) {
         SQLiteDatabase db = getWritableDatabase();
         // WHERE: if문
         // id로 데이터를 넣을 위치 설정
-        //db.execSQL("UPDATE History SET busNm='" + _busNm + "', busRouteId='" + _busRouteId + "', departureNo='" + _departureNo + "', departureNm='" + _departureNm + "', destinationNo='" + _destinationNo + "', destinationNm='" + _destinationNm + "'  WHERE id='" + _id + "'");
-        db.execSQL("UPDATE History SET busNm='" + _busNm + "', busRouteId='" + _busRouteId + "', departureNm='" + _departureNm + "', destinationNm='" + _destinationNm + "'  WHERE id='" + _id + "'");
+        db.execSQL("UPDATE History SET busNm='" + _busNm + "', departureNo='" + _departureNo + "', departureNm='" + _departureNm + "', destinationNo='" + _destinationNo + "', destinationNm='" + _destinationNm + "'  WHERE id='" + _id + "'");
         db.close();
     }
 
