@@ -20,6 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:text="0m | 정거장번호">
+        android:text="0m | 정거장번호 | 다음정거장">
     </TextView>
 </LinearLayout>

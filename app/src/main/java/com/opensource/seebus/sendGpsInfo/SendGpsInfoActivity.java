@@ -40,6 +40,8 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
     Button bt_quitSendGpsInfo;
 
+    TextView sendGpsNextStationTextView;
+    TextView sendGpsRemainingStationCountTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +49,9 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
         tv_Gps = findViewById(R.id.tv_Gps);
         bt_quitSendGpsInfo = findViewById(R.id.bt_quitSendGpsInfo);
+
+        sendGpsNextStationTextView=findViewById(R.id.sendGpsNextStationTextView);
+        sendGpsRemainingStationCountTextView=findViewById(R.id.sendGpsRemainingStationCountTextView);
 
         // androidId, longitude, latitude 값 할당
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -59,16 +64,21 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                SendGpsInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+                SendGpsInfo(SingletonRetrofit.getInstance(getApplicationContext()),timer);
             }
         };
         if(isReboot.equals("No")) {
             timer.schedule(timerTask, 0, 5000); // 5초
+        } else if(isReboot.equals("Yes")) {
+            timer.cancel();
+            SingletonTimer.singletonTimer=new Timer();
+            Timer newTimer = SingletonTimer.getInstance(getApplicationContext());
+            newTimer.schedule(timerTask, 0, 5000);
         }
 
         // "안내 종료" 버튼 누르면 서버 전송 종료 후 홈화면으로 돌아가기
         bt_quitSendGpsInfo.setOnClickListener(view -> {
-            sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),timer);
+            sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),SingletonTimer.getInstance(getApplicationContext()));
         });
     }
 
@@ -115,26 +125,44 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         }
     };
 
-    private void SendGpsInfo(Retrofit retrofit) {
+    private void SendGpsInfo(Retrofit retrofit,Timer timer) {
         SendGpsInfoService sendGpsInfoService = retrofit.create(SendGpsInfoService.class);
-        Call<Void> call = sendGpsInfoService.requestSendGps(new SendGpsInfoRequestDto(androidId, latitude, longitude));
+        Call<SendGpsInfoResponseDto> call = sendGpsInfoService.requestSendGps(new SendGpsInfoRequestDto(androidId, latitude, longitude));
 
-        call.enqueue(new Callback<Void>() {
+        call.enqueue(new Callback<SendGpsInfoResponseDto>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<SendGpsInfoResponseDto> call, Response<SendGpsInfoResponseDto> response) {
                 if (response.isSuccessful()) { // 정상적으로 통신 성공
-                    // 확인용 toast - 나중에 삭제 예정
+                    SendGpsInfoResponseDto gpsInfo = response.body();
+                    if(gpsInfo.isArrived==true) {
+                        timer.cancel();
+                        SingletonTimer.singletonTimer=new Timer(); //새롭게 생성
+                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                        startActivity(mainIntent);
+                    }
+                    sendGpsNextStationTextView.setText("다음정거장 : " + gpsInfo.nextStationName);
+                    sendGpsRemainingStationCountTextView.setText("남은정거장 개수 : "+gpsInfo.remainingStationCount);
                     Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
                 } else { // 통신 실패(응답 코드로 판단)
-                    // 확인용 toast - 나중에 삭제 예정
-                    Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
+                    // 운행종료시 400 BAD_REQUEST이면 타이머 종료후 메인으로 이동
+                    if(response.code()==400) {
+                        timer.cancel();
+                        SingletonTimer.singletonTimer=new Timer(); //새롭게 생성
+                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                        startActivity(mainIntent);
+                        Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<SendGpsInfoResponseDto> call, Throwable t) {
                 // 확인용 toast
-                Toast.makeText(getApplicationContext(), "실패(시스템)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "데이터를 켜주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -168,7 +196,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 // 확인용 toast
-                Toast.makeText(getApplicationContext(), "실패(시스템)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "데이터를 켜주세요.", Toast.LENGTH_SHORT).show();
             }
         });
     }
