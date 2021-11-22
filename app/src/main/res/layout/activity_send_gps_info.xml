@@ -31,6 +31,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_introduction" />
 
+    <TextView
+        android:id="@+id/sendGpsNextStationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="다음 정류장 : "
+        android:textColor="#FFFF00"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_Gps" />
+
+    <TextView
+        android:id="@+id/sendGpsRemainingStationCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="남은정거장 개수 : "
+        android:textColor="#FFFF00"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sendGpsNextStationTextView"
+        app:layout_constraintVertical_bias="0.11" />
+
     <Button
         android:id="@+id/bt_quitSendGpsInfo"
         android:layout_width="wrap_content"
