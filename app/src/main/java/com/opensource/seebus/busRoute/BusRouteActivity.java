@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,6 +18,7 @@ import android.widget.Toast;
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.dialog.CustomDialog;
+import com.opensource.seebus.dialog.CustomDialogClickListener;
 import com.opensource.seebus.history.DBHelper;
 import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
 import com.opensource.seebus.sendRouteInfo.SendRouteInfoRequestDto;
@@ -191,10 +191,23 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 mRtNm = busNm;
                 mStartArsId = departureNo;
 
-//                CustomDialog customDialog = new CustomDialog(BusRouteActivity.this);
-//                customDialog.callFunction(departure,stationNm.get(memoryPosition + position - 1));
-                sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+                CustomDialog customDialog=new CustomDialog(BusRouteActivity.this, new CustomDialogClickListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+                    }
 
+                    @Override
+                    public void onNegativeClick() {
+                        Toast.makeText(getApplicationContext(), "취소 했습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                },departure,stationNm.get(memoryPosition + position - 1));
+                customDialog.setCanceledOnTouchOutside(false);
+                customDialog.setCancelable(false);
+//                customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                customDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                customDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                customDialog.show();
             }
         });
     }
@@ -231,8 +244,6 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-//                Log.d("SENDROUTE", t.toString());
-
                 // 확인용 toast
                 Toast.makeText(getApplicationContext(), "통신 실패 (시스템적인 이유로)", Toast.LENGTH_SHORT).show();
 

@@ -4,16 +4,12 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +24,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -138,7 +133,6 @@ public class SendGpsInfoActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SendGpsInfoResponseDto> call, Response<SendGpsInfoResponseDto> response) {
                 if (response.isSuccessful()) { // 정상적으로 통신 성공
-                    //TODO 다음 정류장 표시해주기
                     SendGpsInfoResponseDto gpsInfo = response.body();
                     if(gpsInfo.isArrived==true) {
                         timer.cancel();
@@ -148,8 +142,6 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
                         startActivity(mainIntent);
                     }
-                    Log.d("TAEWOON",gpsInfo.nextStationName);
-                    Log.d("TAEWOON", String.valueOf(gpsInfo.remainingStationCount));
                     sendGpsNextStationTextView.setText("다음정거장 : " + gpsInfo.nextStationName);
                     sendGpsRemainingStationCountTextView.setText("남은정거장 개수 : "+gpsInfo.remainingStationCount);
                     Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
