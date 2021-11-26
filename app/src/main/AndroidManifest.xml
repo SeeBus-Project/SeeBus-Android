@@ -16,9 +16,11 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".history.FavoriteActivity"
+            android:label="즐겨찾기"
             android:exported="true" />
         <activity
             android:name=".sendGpsInfo.SendGpsInfoActivity"
+            android:label="경로 안내"
             android:exported="true" />
         <activity
             android:name=".history.HistoryActivity"

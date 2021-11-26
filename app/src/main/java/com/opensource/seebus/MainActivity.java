@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.opensource.seebus.history.FavoriteActivity;
 import com.opensource.seebus.history.HistoryActivity;
 import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoRequestDto;
 import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoResponseDto;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button startingPointButton;
     Button historyButton;
+    Button favoriteButton;
 
     private boolean onlySelfTestValue;
 
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         startingPointButton = findViewById(R.id.startingPointButton);
         historyButton=findViewById(R.id.historyButton);
+        favoriteButton=findViewById(R.id.favoriteButton);
         textViewGPS = findViewById(R.id.textViewGPS);
 
         onlySelfTestValue = onlySelfTest();
@@ -91,6 +94,13 @@ public class MainActivity extends AppCompatActivity {
             Intent historyIntent= new Intent(this, HistoryActivity.class);
             startActivity(historyIntent);
         });
+
+        favoriteButton.setOnClickListener(view -> {
+            Intent favoriteIntent= new Intent(this, FavoriteActivity.class);
+            startActivity(favoriteIntent);
+        });
+
+
 
         // 안드로이드 아이디
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);

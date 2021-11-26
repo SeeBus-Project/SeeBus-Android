@@ -3,22 +3,34 @@ package com.opensource.seebus.history;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
+import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 
 import java.util.ArrayList;
 
-public class FavoriteActivity extends AppCompatActivity {
+public class FavoriteActivity extends AppCompatActivity implements View.OnClickListener {
     private RecyclerView mRv_favorite;
     private ArrayList<HistoryItem> mFavoriteItems;
     private DBHelper mDBHelper;
     private FavoriteRvCustomAdaptor mFavoriteAdaptor;
 
+    private Button backBtn;
+    private Button homeBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite);
+
+        backBtn=findViewById(R.id.favoriteBackBtn);
+        backBtn.setOnClickListener(this);
+        homeBtn=findViewById(R.id.favoriteHomeBtn);
+        homeBtn.setOnClickListener(this);
 
         setInit();
     }
@@ -42,6 +54,20 @@ public class FavoriteActivity extends AppCompatActivity {
             mFavoriteAdaptor = new FavoriteRvCustomAdaptor(mFavoriteItems, this);
             mRv_favorite.setHasFixedSize(true);
             mRv_favorite.setAdapter(mFavoriteAdaptor);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v==backBtn) {
+            onBackPressed();
+        }
+        else if (v==homeBtn) {
+
+            Intent mainIntent= new Intent(v.getContext(), MainActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+            startActivity(mainIntent);
         }
     }
 }

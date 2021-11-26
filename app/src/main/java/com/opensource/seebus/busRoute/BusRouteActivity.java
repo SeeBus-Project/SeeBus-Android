@@ -178,7 +178,7 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 mStartArsId = departureNo;
 
                 // history DB에 경로 insert 하기
-                mDBHelper.InsertHistory(mRtNm, mStartArsId, departure, mDestinationArsId, mDestinationName);
+                mDBHelper.insertHistory(mRtNm, mStartArsId, departure, mDestinationArsId, mDestinationName);
 
                 // 서버에 데이터 보내기
                 sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
