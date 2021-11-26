@@ -1,5 +1,8 @@
 package com.opensource.seebus.sendGpsInfo;
 
+import static com.opensource.seebus.subService.Gps.latitude;
+import static com.opensource.seebus.subService.Gps.longitude;
+
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +22,7 @@ import com.opensource.seebus.sendGuideExit.SendGuideExitRequestDto;
 import com.opensource.seebus.sendGuideExit.SendGuideExitService;
 import com.opensource.seebus.singleton.SingletonRetrofit;
 import com.opensource.seebus.singleton.SingletonTimer;
+import com.opensource.seebus.subService.Gps;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,9 +38,9 @@ public class SendGpsInfoActivity extends AppCompatActivity {
     private String androidId;
 
     private TextView tv_Gps;
-    private double longitude;
-    private double latitude;
+
     LocationManager lm;
+    Context mContext;
 
     Button bt_quitSendGpsInfo;
 
@@ -47,6 +51,8 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_gps_info);
 
+        mContext=this;
+
         tv_Gps = findViewById(R.id.tv_Gps);
         bt_quitSendGpsInfo = findViewById(R.id.bt_quitSendGpsInfo);
 
@@ -55,7 +61,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
         // androidId, longitude, latitude 값 할당
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        whenSelfTestValueIsTrue(); // GPS 값 얻어오기
+        Gps.getGps(mContext);
 
         // 5초마다 서버에 GpsInfo 보내기
         Intent sendGpsInfoIntent=getIntent();
@@ -81,49 +87,6 @@ public class SendGpsInfoActivity extends AppCompatActivity {
             sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),SingletonTimer.getInstance(getApplicationContext()));
         });
     }
-
-    private void whenSelfTestValueIsTrue() {
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        // 퍼미션 체크용 (컴파일 하려면 있어야 함.. 의미는 없음)
-
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //GPS_PROVIDER이 null일때 오류 발생해서 NETWORK_PROVIDER를 사용
-        if(location==null) {
-            location=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();
-        tv_Gps.setText(
-                "위도 : " + latitude + "\n" +
-                        "경도 : " + longitude + "\n"
-        );
-
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                0,
-                0,
-                gpsLocationListener);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                0,
-                0,
-                gpsLocationListener);
-    }
-
-    final LocationListener gpsLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-            tv_Gps.setText(
-                    "위도 : " + latitude + "\n" +
-                            "경도 : " + longitude + "\n"
-            );
-        }
-    };
 
     private void SendGpsInfo(Retrofit retrofit,Timer timer) {
         SendGpsInfoService sendGpsInfoService = retrofit.create(SendGpsInfoService.class);

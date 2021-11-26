@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.selectBus.SelectBusActivity;
+import com.opensource.seebus.subService.Gps;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,16 +57,11 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
         progressBar=findViewById(R.id.startingPointProgressBar);
         ListView listView=findViewById(R.id.startingPointListView);
 
-        Intent startingPointIntent = getIntent();
-
-        double longitude=startingPointIntent.getDoubleExtra("longitude",0);
-        double latitude=startingPointIntent.getDoubleExtra("latitude",0);
-
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
         String getStationsByPosListUrl = getString(R.string.getStationByPos)+getString(R.string.serviceKey)+
-                "&tmX="+longitude+"&tmY="+latitude+"&radius=1000";
+                "&tmX="+ Gps.longitude+"&tmY="+Gps.latitude+"&radius=1000";
         List<String> arsId=new ArrayList<>();       //정거장번호
         List<String> dist=new ArrayList<>();        //거리
         List<String> stationId=new ArrayList<>();   //정거장아이디

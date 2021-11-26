@@ -3,6 +3,8 @@
     package="com.opensource.seebus" >
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -14,6 +16,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SeeBus"
         android:usesCleartextTraffic="true" >
+        <activity
+            android:name=".subService.Splash"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".sendGpsInfo.SendGpsInfoActivity"
             android:exported="true" />
@@ -33,13 +44,8 @@
             android:name=".busRoute.BusRouteActivity"
             android:label="도착 정류장 선택"
             android:exported="false" />
-        <activity android:name=".MainActivity" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".MainActivity" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
         <service
             android:name=".firebase.MyFirebaseMessagingService"

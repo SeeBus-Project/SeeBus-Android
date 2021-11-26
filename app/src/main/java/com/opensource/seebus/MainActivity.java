@@ -1,9 +1,8 @@
 package com.opensource.seebus;
 
-import android.Manifest;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,12 +23,11 @@ import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoService;
 import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
 import com.opensource.seebus.singleton.SingletonRetrofit;
 import com.opensource.seebus.startingPoint.StartingPointActivity;
+import com.opensource.seebus.subService.Gps;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -37,19 +35,15 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView textViewGPS;
-    private double longitude;
-    private double latitude;
-    private double accuracy;
-    LocationManager lm;
+    public TextView textViewGPS;
 
     Button startingPointButton;
     Button historyButton;
 
-    private boolean onlySelfTestValue;
-
     String firebaseToken;
     String androidId;
+
+    public static Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,32 +54,29 @@ public class MainActivity extends AppCompatActivity {
         historyButton=findViewById(R.id.historyButton);
         textViewGPS = findViewById(R.id.textViewGPS);
 
-        onlySelfTestValue = onlySelfTest();
-
-        if (onlySelfTestValue == false) {
-            ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    200);
-        } else {
-            //최초실행이 아니고 퍼미션이 트루라면 앱을 켜자마자 현재위치 찾기
-            whenSelfTestValueIsTrue();
-        }
+        mContext = this;
 
         startingPointButton.setOnClickListener(view -> {
-            if (onlySelfTest() == false) {
+            if (Gps.permissionCheck == false) {
                 showToast("위치 권한 설정이 필요합니다.\n어플리케이션을 재실행하거나 재설치해주세요.");
-            } else if (longitude != 0.0 && latitude != 0.0) {
+            } else if (Gps.longitude != 0.0 && Gps.latitude != 0.0) {
                 // 최초실행이 아닐때 이미 위에서 현재위치를 가져왔으므로 반복해서 위치를 얻지 않는다.
                 goStartingPointActivity();
             } else {
                 // 최초실행하고 퍼미션이 트루라면 onCreate()의 if else 문이 작동하지 않으므로 해당 함수를 호출해준다.
                 // 물론 캐시에 저장된 위치를 사용해서 정확도가 떨어지지만 다시 홈화면으로 돌아올 경우 위치는 갱신되어있으므로
                 // 조금? 좋아진거같다.
-                whenSelfTestValueIsTrue();
+                Gps.getGps(mContext);
                 goStartingPointActivity();
             }
         });
+
+        textViewGPS.setText(
+                "위도 : " + Gps.latitude + "\n" +
+                        "경도 : " + Gps.longitude + "\n" +
+                        "Accuracy : " + Gps.accuracy + "\n" +
+                        "Provider : " + Gps.gpsKinds + "\n"
+        );
 
         historyButton.setOnClickListener(view -> {
             Intent historyIntent= new Intent(this, HistoryActivity.class);
@@ -119,51 +110,7 @@ public class MainActivity extends AppCompatActivity {
   
     private void goStartingPointActivity() {
         Intent startingPointIntent = new Intent(this, StartingPointActivity.class);
-        startingPointIntent.putExtra("longitude", longitude);
-        startingPointIntent.putExtra("latitude", latitude);
         startActivity(startingPointIntent);
-    }
-
-    private boolean onlySelfTest() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void whenSelfTestValueIsTrue() {
-        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        // 퍼미션 체크용 (컴파일 하려면 있어야 함.. 의미는 없음)
-
-        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //GPS_PROVIDER이 null일때 오류 발생해서 NETWORK_PROVIDER를 사용
-        if(location==null) {
-            location=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        }
-        longitude = location.getLongitude();
-        latitude = location.getLatitude();
-        accuracy = location.getAccuracy();
-        textViewGPS.setText(
-                "위도 : " + latitude + "\n" +
-                        "경도 : " + longitude + "\n" +
-                        "Accuracy : " + accuracy + "\n"
-        );
-
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                0,
-                0,
-                gpsLocationListener);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                0,
-                0,
-                gpsLocationListener);
     }
 
     @Override
@@ -174,13 +121,12 @@ public class MainActivity extends AppCompatActivity {
     final LocationListener gpsLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-            accuracy = location.getAccuracy();
+            Gps.getGps(mContext);
             textViewGPS.setText(
-                    "위도 : " + latitude + "\n" +
-                            "경도 : " + longitude + "\n" +
-                            "Accuracy : " + accuracy + "\n"
+                    "위도 : " + Gps.latitude + "\n" +
+                            "경도 : " + Gps.longitude + "\n" +
+                            "Accuracy : " + Gps.accuracy + "\n" +
+                            "Provider : " + Gps.gpsKinds + "\n"
             );
         }
     };
