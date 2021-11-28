@@ -25,6 +25,7 @@ public class Gps {
 
     //Gps 정보 불러와 줌
     public static void getGps(Context context) {
+        Log.d("USERCONTEXT", String.valueOf(context));
         lm = (LocationManager) context.getSystemService(context.LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -42,7 +43,6 @@ public class Gps {
             Gps.latitude = location.getLatitude();
             Gps.accuracy = location.getAccuracy();
             Gps.gpsKinds = location.getProvider();
-
         }
 
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -58,10 +58,12 @@ public class Gps {
     static final LocationListener gpsLocationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            Gps.longitude = location.getLongitude();
-            Gps.latitude = location.getLatitude();
-            Gps.accuracy = location.getAccuracy();
-            Gps.gpsKinds = location.getProvider();
+            if (location.getAccuracy()<=25) {
+                Gps.longitude = location.getLongitude();
+                Gps.latitude = location.getLatitude();
+                Gps.accuracy = location.getAccuracy();
+                Gps.gpsKinds = location.getProvider();
+            }
 
             Log.d("User_GPS","Update");
 
