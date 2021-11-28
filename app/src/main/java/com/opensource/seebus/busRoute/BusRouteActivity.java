@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
+import com.opensource.seebus.dialog.CustomDialog;
+import com.opensource.seebus.dialog.CustomDialogClickListener;
 import com.opensource.seebus.history.DBHelper;
 import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
 import com.opensource.seebus.sendRouteInfo.SendRouteInfoRequestDto;
@@ -28,6 +30,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,11 +168,18 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
+//                Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
                 //출발지
-                mainIntent.putExtra("departure",departure);
+//                mainIntent.putExtra("departure",departure);
                 //도착지
-                mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
+//                mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
+                //EC2 신호전달(TCP)
+                ClientThread thread = new ClientThread();
+                thread.data[0] = "in";
+                thread.data[1] = departure;
+                thread.data[2] = stationNm.get(memoryPosition + position - 1);
+                thread.getPort = 5000;
+                thread.start();
 
                 // 데이터 할당
                 mAndroidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -180,8 +191,23 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 // history DB에 경로 insert 하기
                 mDBHelper.insertHistory(mRtNm, mStartArsId, departure, mDestinationArsId, mDestinationName);
 
-                // 서버에 데이터 보내기
-                sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+                CustomDialog customDialog=new CustomDialog(BusRouteActivity.this, new CustomDialogClickListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+                    }
+
+                    @Override
+                    public void onNegativeClick() {
+                        Toast.makeText(getApplicationContext(), "취소 했습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                },departure,stationNm.get(memoryPosition + position - 1));
+                customDialog.setCanceledOnTouchOutside(false);
+                customDialog.setCancelable(false);
+//                customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                customDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+//                customDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                customDialog.show();
             }
         });
     }
@@ -218,8 +244,6 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-//                Log.d("SENDROUTE", t.toString());
-
                 // 확인용 toast
                 Toast.makeText(getApplicationContext(), "통신 실패 (시스템적인 이유로)", Toast.LENGTH_SHORT).show();
 
@@ -245,4 +269,46 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
             startActivity(mainIntent);
         }
     }
+
+    // TCP 쓰레드
+    class ClientThread extends Thread {
+        String data[] = new String[3];
+        int getPort;
+        @Override
+        public void run() {
+            String host2 = "183.101.12.31";
+            String host = "ec2-3-35-208-56.ap-northeast-2.compute.amazonaws.com";
+            try {
+                Socket socket = new Socket(host, getPort);
+
+                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream()); //소켓의 출력 스트림 참조
+                outstream.writeObject(data[0]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 출발정류장 전송
+                outstream.writeObject(data[1]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 도착정류장 전송
+                outstream.writeObject(data[2]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+
+
+                //ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
+                //String response = (String)instream.readObject();
+
+                //response = (String)instream.readObject();
+
+                outstream.close();
+                //instream.close();
+                socket.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

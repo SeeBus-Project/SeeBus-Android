@@ -21,4 +21,11 @@
         <item name="fontFamily">@font/font</item>
     </style>
 
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/yellow</item>
+        <item name="android:background">@color/black</item>
+        <item name="android:textColor">@color/yellow</item>
+
+    </style>
+
 </resources>
