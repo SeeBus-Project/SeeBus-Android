@@ -7,11 +7,10 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Log;
-import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
 
 import com.opensource.seebus.MainActivity;
+
+import androidx.core.app.ActivityCompat;
 
 public class Gps {
 

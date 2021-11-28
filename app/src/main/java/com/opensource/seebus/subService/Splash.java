@@ -14,14 +14,14 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.opensource.seebus.MainActivity;
+import com.opensource.seebus.R;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-
-import com.opensource.seebus.MainActivity;
-import com.opensource.seebus.R;
 
 
 public class Splash extends AppCompatActivity {
@@ -131,99 +131,3 @@ public class Splash extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
-/*public class Splash extends AppCompatActivity {
-
-
-    private boolean onlySelfTestValue;
-
-
-    private Gps gps;
-
-    public static Context mContext;
-
-    private AlertDialog alertDialog;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceStare) {
-        super.onCreate(savedInstanceStare);
-        setContentView(R.layout.activity_splash);
-
-        mContext = getApplicationContext();
-
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
-
-    }
-
-
-    // permission 갱신
-    protected void isPermissionCheck() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this.getApplicationContext(),Manifest.permission.ACCESS_BACKGROUND_LOCATION) !=PackageManager.PERMISSION_GRANTED) {
-            Gps.permissionCheck = true;
-        } else {
-            Gps.permissionCheck = false;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int [] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        gps = new Gps();
-
-        isPermissionCheck();
-
-        if (Gps.permissionCheck == false) {
-            ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION},
-                    200);
-        }
-
-        if (Gps.permissionCheck==true) {
-            gps.getGps(mContext);
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(mContext,MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            },3000);
-
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setIcon(android.R.drawable.ic_dialog_alert);
-            builder.setTitle("알림");
-            builder.setMessage("위치 권한 설정이 필요합니다.\n어플리케이션을 재실행하거나 재설치해주세요.");
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                }
-            });
-            builder.setNegativeButton("NO", null);
-
-            alertDialog = builder.create();
-            alertDialog.show();
-
-        }
-
-
-    }
-}*/

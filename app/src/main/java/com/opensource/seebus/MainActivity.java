@@ -3,9 +3,6 @@ package com.opensource.seebus;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -117,19 +114,6 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int [] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
-
-    final LocationListener gpsLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            Gps.getGps(mContext);
-            textViewGPS.setText(
-                    "위도 : " + Gps.latitude + "\n" +
-                            "경도 : " + Gps.longitude + "\n" +
-                            "Accuracy : " + Gps.accuracy + "\n" +
-                            "Provider : " + Gps.gpsKinds + "\n"
-            );
-        }
-    };
 
     private void sendDeviceInfo(Retrofit retrofit) {
         SendDeviceInfoService sendDeviceInfoService=retrofit.create(SendDeviceInfoService.class);

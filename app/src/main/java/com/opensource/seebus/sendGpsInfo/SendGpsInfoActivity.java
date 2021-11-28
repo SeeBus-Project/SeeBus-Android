@@ -1,15 +1,7 @@
 package com.opensource.seebus.sendGpsInfo;
 
-import static com.opensource.seebus.subService.Gps.latitude;
-import static com.opensource.seebus.subService.Gps.longitude;
-
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.widget.Button;
@@ -28,18 +20,19 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+
+import static com.opensource.seebus.subService.Gps.latitude;
+import static com.opensource.seebus.subService.Gps.longitude;
 
 public class SendGpsInfoActivity extends AppCompatActivity {
     private String androidId;
 
     private TextView tv_Gps;
 
-    LocationManager lm;
     Context mContext;
 
     Button bt_quitSendGpsInfo;
@@ -63,6 +56,12 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Gps.getGps(mContext);
 
+        tv_Gps.setText(
+                "위도 : " + Gps.latitude + "\n" +
+                        "경도 : " + Gps.longitude + "\n" +
+                        "Accuracy : " + Gps.accuracy + "\n" +
+                        "Provider : " + Gps.gpsKinds + "\n"
+        );
         // 5초마다 서버에 GpsInfo 보내기
         Intent sendGpsInfoIntent=getIntent();
         String isReboot=sendGpsInfoIntent.getStringExtra("isReboot");
@@ -107,6 +106,12 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     }
                     sendGpsNextStationTextView.setText("다음정거장 : " + gpsInfo.nextStationName);
                     sendGpsRemainingStationCountTextView.setText("남은정거장 개수 : "+gpsInfo.remainingStationCount);
+                    tv_Gps.setText(
+                            "위도 : " + Gps.latitude + "\n" +
+                                    "경도 : " + Gps.longitude + "\n" +
+                                    "Accuracy : " + Gps.accuracy + "\n" +
+                                    "Provider : " + Gps.gpsKinds + "\n"
+                    );
                     Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
                 } else { // 통신 실패(응답 코드로 판단)
                     // 운행종료시 400 BAD_REQUEST이면 타이머 종료후 메인으로 이동
