@@ -181,15 +181,15 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 thread.getPort = 5000;
                 thread.start();
 
-                // history DB에 경로 insert 하기 - 수정 예정
-                mDBHelper.InsertHistory(busNm, busRouteId, departure, stationNm.get(memoryPosition+position-1));
-
-                // 서버에 RouteInfo 보내기
+                // 데이터 할당
                 mAndroidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                 mDestinationArsId = stationNo.get(memoryPosition+position-1);
                 mDestinationName = stationNm.get(memoryPosition+position-1);
                 mRtNm = busNm;
                 mStartArsId = departureNo;
+
+                // history DB에 경로 insert 하기
+                mDBHelper.insertHistory(mRtNm, mStartArsId, departure, mDestinationArsId, mDestinationName);
 
                 CustomDialog customDialog=new CustomDialog(BusRouteActivity.this, new CustomDialogClickListener() {
                     @Override

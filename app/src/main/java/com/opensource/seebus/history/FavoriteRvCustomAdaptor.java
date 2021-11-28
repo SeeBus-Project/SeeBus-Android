@@ -28,8 +28,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustomAdaptor.ViewHolder> {
-    private ArrayList<HistoryItem> mHistoryItems;
+public class FavoriteRvCustomAdaptor extends RecyclerView.Adapter<FavoriteRvCustomAdaptor.ViewHolder> {
+    private ArrayList<HistoryItem> mFavoriteItems;
     private Context mContext;
     private DBHelper mDBHelper;
 
@@ -40,36 +40,35 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
     private String mRtNm;
     private String mStartArsId;
 
-    public HistoryRvCustomAdaptor(ArrayList<HistoryItem> mHistoryItems, Context mContext) {
-        this.mHistoryItems = mHistoryItems;
+    public FavoriteRvCustomAdaptor(ArrayList<HistoryItem> mFavoriteItems, Context mContext) {
+        this.mFavoriteItems = mFavoriteItems;
         this.mContext = mContext;
         mDBHelper = new DBHelper(mContext);
     }
 
     @NonNull
     @Override
-    public HistoryRvCustomAdaptor.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public FavoriteRvCustomAdaptor.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // 즐겨찾기와 최근기록의 아이템은 동일하게 생겨서 custom_history 그대로 가져옴.
         View holder = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_history, parent, false);
-        return new ViewHolder(holder);
+        return new FavoriteRvCustomAdaptor.ViewHolder(holder);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HistoryRvCustomAdaptor.ViewHolder holder, int position) {
-        holder.tv_busNm.setText(mHistoryItems.get(position).getBusNm() + " 버스");
-        holder.tv_departureNm.setText(mHistoryItems.get(position).getDepartureNm() + " 출발");
-        holder.tv_destinationNm.setText(mHistoryItems.get(position).getDestinationNm() + " 도착");
+    public void onBindViewHolder(@NonNull FavoriteRvCustomAdaptor.ViewHolder holder, int position) {
+        holder.tv_busNm.setText(mFavoriteItems.get(position).getBusNm() + " 버스");
+        holder.tv_departureNm.setText(mFavoriteItems.get(position).getDepartureNm() + " 출발");
+        holder.tv_destinationNm.setText(mFavoriteItems.get(position).getDestinationNm() + " 도착");
     }
 
     @Override
-    public int getItemCount() {
-        return mHistoryItems.size();
-    }
+    public int getItemCount() { return mFavoriteItems.size(); }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tv_busNm;
         private TextView tv_departureNm;
         private TextView tv_destinationNm;
-
+        
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -81,9 +80,9 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
                 @Override
                 public void onClick(View view) {
                     int currentPosition = getAdapterPosition(); // 현재 리스트 클릭한 아이템 위치
-                    HistoryItem historyItem = mHistoryItems.get(currentPosition);
+                    HistoryItem favoriteItem = mFavoriteItems.get(currentPosition);
 
-                    String[] strChoiceItems = {"안내시작", "즐겨찾기에 추가", "뒤로가기"};
+                    String[] strChoiceItems = {"안내시작", "삭제하기", "뒤로가기"};
                     AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                     builder.setItems(strChoiceItems, new DialogInterface.OnClickListener() {
 
@@ -93,35 +92,32 @@ public class HistoryRvCustomAdaptor extends RecyclerView.Adapter<HistoryRvCustom
                                 Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
 
                                 // 출발지
-                                mainIntent.putExtra("departure",historyItem.getDepartureNm());
+                                mainIntent.putExtra("departure",favoriteItem.getDepartureNm());
                                 //도착지
-                                mainIntent.putExtra("destination",historyItem.getDestinationNm());
+                                mainIntent.putExtra("destination",favoriteItem.getDestinationNm());
 
                                 Toast.makeText(mContext, "안내를 시작합니다.", Toast.LENGTH_SHORT).show();
 
                                 // 데이터 할당
                                 mAndroidId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-                                mDestinationArsId = historyItem.getDestinationNo();
-                                mDestinationName = historyItem.getDestinationNm();
-                                mRtNm = historyItem.getBusNm();
-                                mStartArsId = historyItem.getDepartureNo();
+                                mDestinationArsId = favoriteItem.getDestinationNo();
+                                mDestinationName = favoriteItem.getDestinationNm();
+                                mRtNm = favoriteItem.getBusNm();
+                                mStartArsId = favoriteItem.getDepartureNo();
 
                                 // 서버에 데이터 전송
                                 sendRouteInfo(SingletonRetrofit.getInstance(mContext.getApplicationContext()));
                             }
-                            else if (position == 1) { // 즐겨찾기에 추가
-                                // insert to favorite
-                                mDBHelper.insertFavorite(historyItem.getBusNm(), historyItem.getDepartureNo(), historyItem.getDepartureNm(), historyItem.getDestinationNo(), historyItem.getDestinationNm());
-
+                            else if (position == 1) { // 삭제하기
                                 // delete table
-                                int itemId = historyItem.getId();
-                                mDBHelper.deleteHistory(itemId);
+                                int itemId = favoriteItem.getId();
+                                mDBHelper.deleteFavorite(itemId);
 
                                 // delete UI
-                                mHistoryItems.remove(currentPosition);
+                                mFavoriteItems.remove(currentPosition);
                                 notifyItemRemoved(currentPosition);
                                 dialog.dismiss();
-                                Toast.makeText(mContext, "즐겨찾기에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                             }
                             else if (position == 2) { // 뒤로가기
                                 dialog.dismiss();

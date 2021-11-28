@@ -13,7 +13,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/historyBackBtn"
+            android:id="@+id/favoriteBackBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -22,7 +22,7 @@
             android:text="뒤로가기"/>
 
         <Button
-            android:id="@+id/historyHomeBtn"
+            android:id="@+id/favoriteHomeBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

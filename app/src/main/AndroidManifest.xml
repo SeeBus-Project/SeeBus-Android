@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.opensource.seebus" >
+    package="com.opensource.seebus">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -15,7 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SeeBus"
-        android:usesCleartextTraffic="true" >
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".history.FavoriteActivity"
+            android:label="즐겨찾기"
+            android:exported="true" />
         <activity
             android:name=".subService.Splash"
             android:exported="true">
@@ -27,19 +31,20 @@
         </activity>
         <activity
             android:name=".sendGpsInfo.SendGpsInfoActivity"
+            android:label="경로 안내"
             android:exported="true" />
         <activity
             android:name=".history.HistoryActivity"
-            android:label="최근 기록"
-            android:exported="true" />
+            android:exported="true"
+            android:label="최근 기록" />
         <activity
             android:name=".startingPoint.StartingPointActivity"
-            android:label="출발 정류장 선택"
-            android:exported="false" />
+            android:exported="false"
+            android:label="출발 정류장 선택" />
         <activity
             android:name=".selectBus.SelectBusActivity"
-            android:label="탑승할 버스 선택"
-            android:exported="false" />
+            android:exported="false"
+            android:label="탑승할 버스 선택" />
         <activity
             android:name=".busRoute.BusRouteActivity"
             android:label="도착 정류장 선택"
@@ -49,7 +54,7 @@
 
         <service
             android:name=".firebase.MyFirebaseMessagingService"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
