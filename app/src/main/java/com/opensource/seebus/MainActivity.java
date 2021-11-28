@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 // 최초실행하고 퍼미션이 트루라면 onCreate()의 if else 문이 작동하지 않으므로 해당 함수를 호출해준다.
                 // 물론 캐시에 저장된 위치를 사용해서 정확도가 떨어지지만 다시 홈화면으로 돌아올 경우 위치는 갱신되어있으므로
                 // 조금? 좋아진거같다.
-                Gps.getGps(mContext);
+                Gps.getGps(getApplicationContext());
                 goStartingPointActivity();
             }
         });

@@ -168,19 +168,6 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
-                //출발지
-//                mainIntent.putExtra("departure",departure);
-                //도착지
-//                mainIntent.putExtra("destination",stationNm.get(memoryPosition +position-1));
-                //EC2 신호전달(TCP)
-                ClientThread thread = new ClientThread();
-                thread.data[0] = "in";
-                thread.data[1] = departure;
-                thread.data[2] = stationNm.get(memoryPosition + position - 1);
-                thread.getPort = 5000;
-                thread.start();
-
                 // 데이터 할당
                 mAndroidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
                 mDestinationArsId = stationNo.get(memoryPosition+position-1);
@@ -194,6 +181,13 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 CustomDialog customDialog=new CustomDialog(BusRouteActivity.this, new CustomDialogClickListener() {
                     @Override
                     public void onPositiveClick() {
+                        //EC2 신호전달(TCP)
+                        ClientThread thread = new ClientThread();
+                        thread.data[0] = "in";
+                        thread.data[1] = departure;
+                        thread.data[2] = stationNm.get(memoryPosition + position - 1);
+                        thread.getPort = 5000;
+                        thread.start();
                         sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
                     }
 
@@ -292,9 +286,6 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 // 도착정류장 전송
                 outstream.writeObject(data[2]); // 출력 스트림에 데이터 넣기
                 outstream.flush(); // 출력
-
-
-
                 //ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
                 //String response = (String)instream.readObject();
 

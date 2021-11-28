@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
@@ -21,8 +18,12 @@ import com.opensource.seebus.sendRouteInfo.SendRouteInfoRequestDto;
 import com.opensource.seebus.sendRouteInfo.SendRouteInfoService;
 import com.opensource.seebus.singleton.SingletonRetrofit;
 
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -95,6 +96,14 @@ public class FavoriteRvCustomAdaptor extends RecyclerView.Adapter<FavoriteRvCust
                                 mainIntent.putExtra("departure",favoriteItem.getDepartureNm());
                                 //도착지
                                 mainIntent.putExtra("destination",favoriteItem.getDestinationNm());
+
+                                //EC2 신호전달(TCP)
+                                ClientThread thread = new ClientThread();
+                                thread.data[0] = "in";
+                                thread.data[1] = favoriteItem.getDepartureNm();
+                                thread.data[2] = favoriteItem.getDestinationNm();
+                                thread.getPort = 5000;
+                                thread.start();
 
                                 Toast.makeText(mContext, "안내를 시작합니다.", Toast.LENGTH_SHORT).show();
 
@@ -174,6 +183,44 @@ public class FavoriteRvCustomAdaptor extends RecyclerView.Adapter<FavoriteRvCust
                 mContext.startActivity(mainIntent);
             }
         });
+    }
+
+    // TCP 쓰레드
+    class ClientThread extends Thread {
+        String data[] = new String[3];
+        int getPort;
+        @Override
+        public void run() {
+            String host2 = "183.101.12.31";
+            String host = "ec2-3-35-208-56.ap-northeast-2.compute.amazonaws.com";
+            try {
+                Socket socket = new Socket(host, getPort);
+
+                ObjectOutputStream outstream = new ObjectOutputStream(socket.getOutputStream()); //소켓의 출력 스트림 참조
+                outstream.writeObject(data[0]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 출발정류장 전송
+                outstream.writeObject(data[1]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+
+                // 도착정류장 전송
+                outstream.writeObject(data[2]); // 출력 스트림에 데이터 넣기
+                outstream.flush(); // 출력
+                //ObjectInputStream instream = new ObjectInputStream(socket.getInputStream());
+                //String response = (String)instream.readObject();
+
+                //response = (String)instream.readObject();
+
+                outstream.close();
+                //instream.close();
+                socket.close();
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

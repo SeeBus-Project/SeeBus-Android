@@ -1,6 +1,5 @@
 package com.opensource.seebus.sendGpsInfo;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -33,8 +32,6 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
     private TextView tv_Gps;
 
-    Context mContext;
-
     Button bt_quitSendGpsInfo;
 
     TextView sendGpsNextStationTextView;
@@ -44,8 +41,6 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_gps_info);
 
-        mContext=this;
-
         tv_Gps = findViewById(R.id.tv_Gps);
         bt_quitSendGpsInfo = findViewById(R.id.bt_quitSendGpsInfo);
 
@@ -54,7 +49,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
         // androidId, longitude, latitude 값 할당
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Gps.getGps(mContext);
+        Gps.getGps(getApplicationContext());
 
         tv_Gps.setText(
                 "위도 : " + Gps.latitude + "\n" +
