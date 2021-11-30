@@ -13,9 +13,10 @@
         android:id="@+id/startingPointButton"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_marginBottom="10dp"
-        android:text="출발지 선택"
+        android:layout_weight="1"
+        android:text="@string/startingPointButtonTitle"
+        android:textSize="45sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.487"
@@ -29,8 +30,9 @@
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
         android:layout_weight="1"
-        android:text="최근 기록"
+        android:text="@string/historyButtonTitle"
         android:textColor="#000000"
+        android:textSize="45sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -44,24 +46,15 @@
         android:layout_height="0dp"
         android:layout_marginBottom="10dp"
         android:layout_weight="1"
-        android:text="즐겨찾기"
+        android:text="@string/favoriteButtonTitle"
         android:textColor="#000000"
+        android:textSize="45sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/startingPointButton"
         app:layout_constraintVertical_bias="0.109" />
-
-    <TextView
-        android:id="@+id/textViewGPS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/startingPointButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 
 </LinearLayout>
