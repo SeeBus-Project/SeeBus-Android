@@ -3,6 +3,7 @@ package com.opensource.seebus.sendGpsInfo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_gps_info);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         tv_Gps = findViewById(R.id.tv_Gps);
         bt_quitSendGpsInfo = findViewById(R.id.bt_quitSendGpsInfo);
