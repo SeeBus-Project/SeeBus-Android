@@ -10,31 +10,31 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/yellow"
         android:gravity="center"
-        android:textSize="16dp"
-        android:textColor="@color/black"
         android:text="목적지 확인"
-        android:background="@color/yellow"/>
+        android:textColor="@color/black"
+        android:textSize="45sp" />
 
     <TextView
         android:id="@+id/customDialogDepartureStationTextView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/black"
         android:gravity="center"
         android:text="출발 정류장 : "
-        android:textColor="@color/black"
-        android:background="@color/yellow"
-        android:textSize="16dp"/>
+        android:textColor="@color/yellow"
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/customDialogDestinationStationTextView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:background="@color/black"
         android:gravity="center"
         android:text="도착 정류장 : "
-        android:textColor="@color/black"
-        android:background="@color/yellow"
-        android:textSize="16dp"/>
+        android:textColor="@color/yellow"
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"

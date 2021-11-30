@@ -7,4 +7,11 @@
     <string name="msg_token_fmt">InstanceID Token: %s</string>
     <string name="android_id">AndroidID: %s</string>
     <string name="server_address">http://3.35.208.56/</string>
+    <string name="historyButtonTitle">최근 기록</string>
+    <string name="startingPointButtonTitle">출발지 선택</string>
+    <string name="favoriteButtonTitle">즐겨찾기</string>
+    <string name="tv_introductionTitle">경로 안내 중</string>
+    <string name="sendGpsNextStationTitle">다음 정류장 :</string>
+    <string name="bt_quitSendGpsInfoTitle">안내 종료</string>
+    <string name="sendGpsRemainingStaionCountTitle">남은정거장 개수 :</string>
 </resources>

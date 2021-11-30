@@ -216,7 +216,7 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) { // 정상적으로 통신 성공
                     // 확인용 toast
-                    Toast.makeText(getApplicationContext(), "통신 성공", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "안내를 시작합니다.", Toast.LENGTH_SHORT).show();
 
                     // SendGpsInfoActivity로 넘어가기
                     Intent gpsIntent = new Intent(BusRouteActivity.this, SendGpsInfoActivity.class);
@@ -226,7 +226,7 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                     startActivity(gpsIntent);
                 } else { // 통신 실패(응답 코드로 판단)
                     // 확인용 toast
-                    Toast.makeText(getApplicationContext(), "통신 실패 (응답 코드: 3xx, 4xx 등)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "현재 서비스하지 않는 경로입니다.", Toast.LENGTH_SHORT).show();
 
                     // MainActivity로 돌아가기
                     Intent mainIntent = new Intent(BusRouteActivity.this, MainActivity.class);
@@ -239,7 +239,7 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 // 확인용 toast
-                Toast.makeText(getApplicationContext(), "통신 실패 (시스템적인 이유로)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "데이터를 키고 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
 
                 // MainActivity로 돌아가기
                 Intent mainIntent = new Intent(BusRouteActivity.this, MainActivity.class);
