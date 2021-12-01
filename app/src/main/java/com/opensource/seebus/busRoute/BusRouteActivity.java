@@ -186,6 +186,7 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                         thread.data[0] = "in";
                         thread.data[1] = departure;
                         thread.data[2] = stationNm.get(memoryPosition + position - 1);
+                        //thread.data[3] = mRtNm
                         thread.getPort = 5000;
                         thread.start();
                         sendRouteInfo(SingletonRetrofit.getInstance(getApplicationContext()));
@@ -195,7 +196,7 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                     public void onNegativeClick() {
                         Toast.makeText(getApplicationContext(), "취소 했습니다.", Toast.LENGTH_SHORT).show();
                     }
-                },departure,stationNm.get(memoryPosition + position - 1));
+                },departure,stationNm.get(memoryPosition + position - 1),busNm);
                 customDialog.setCanceledOnTouchOutside(false);
                 customDialog.setCancelable(false);
 //                customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

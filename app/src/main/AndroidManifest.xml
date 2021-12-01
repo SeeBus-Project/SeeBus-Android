@@ -19,10 +19,12 @@
         <activity
             android:name=".history.FavoriteActivity"
             android:label="즐겨찾기"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".subService.Splash"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,24 +34,31 @@
         <activity
             android:name=".sendGpsInfo.SendGpsInfoActivity"
             android:label="경로 안내"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".history.HistoryActivity"
             android:exported="true"
-            android:label="최근 기록" />
+            android:label="최근 기록"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".startingPoint.StartingPointActivity"
             android:exported="false"
-            android:label="출발 정류장 선택" />
+            android:label="출발 정류장 선택"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".selectBus.SelectBusActivity"
             android:exported="false"
-            android:label="탑승할 버스 선택" />
+            android:label="탑승할 버스 선택"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".busRoute.BusRouteActivity"
             android:label="도착 정류장 선택"
-            android:exported="false" />
-        <activity android:name=".MainActivity" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
 
 
         <service
