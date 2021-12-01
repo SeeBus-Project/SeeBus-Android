@@ -53,7 +53,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
 //                        .setSmallIcon(R.mipmap.ic_firebase)
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.mipmap.seebus_icon)
                         .setContentTitle(title)
                         .setContentText(body)
 //                        .setColor(Integer.parseInt(String.valueOf(R.color.teal_200)))
