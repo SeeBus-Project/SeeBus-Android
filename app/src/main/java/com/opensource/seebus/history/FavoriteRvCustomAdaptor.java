@@ -105,8 +105,6 @@ public class FavoriteRvCustomAdaptor extends RecyclerView.Adapter<FavoriteRvCust
                                 thread.getPort = 5000;
                                 thread.start();
 
-                                Toast.makeText(mContext, "안내를 시작합니다.", Toast.LENGTH_SHORT).show();
-
                                 // 데이터 할당
                                 mAndroidId = Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
                                 mDestinationArsId = favoriteItem.getDestinationNo();
@@ -149,7 +147,7 @@ public class FavoriteRvCustomAdaptor extends RecyclerView.Adapter<FavoriteRvCust
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) { // 정상적으로 통신 성공
                     // 확인용 toast
-                    Toast.makeText(mContext.getApplicationContext(), "통신 성공", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext.getApplicationContext(), "안내를 시작합니다.", Toast.LENGTH_SHORT).show();
 
                     // SendGpsInfoActivity로 넘어가기
                     Intent gpsIntent = new Intent(mContext, SendGpsInfoActivity.class);
@@ -159,7 +157,7 @@ public class FavoriteRvCustomAdaptor extends RecyclerView.Adapter<FavoriteRvCust
                     mContext.startActivity(gpsIntent);
                 } else { // 통신 실패(응답 코드로 판단)
                     // 확인용 toast
-                    Toast.makeText(mContext.getApplicationContext(), "통신 실패 (응답 코드: 3xx, 4xx 등)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext.getApplicationContext(), "현재 서비스하지 않는 경로입니다.", Toast.LENGTH_SHORT).show();
 
                     // MainActivity로 돌아가기
                     Intent mainIntent = new Intent(mContext, MainActivity.class);
@@ -174,7 +172,7 @@ public class FavoriteRvCustomAdaptor extends RecyclerView.Adapter<FavoriteRvCust
 //                Log.d("SENDROUTE", t.toString());
 
                 // 확인용 toast
-                Toast.makeText(mContext.getApplicationContext(), "통신 실패 (시스템적인 이유로)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext.getApplicationContext(), "데이터를 키고 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
 
                 // MainActivity로 돌아가기
                 Intent mainIntent = new Intent(mContext, MainActivity.class);

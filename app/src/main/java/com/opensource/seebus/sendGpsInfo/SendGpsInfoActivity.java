@@ -31,7 +31,7 @@ import static com.opensource.seebus.subService.Gps.longitude;
 public class SendGpsInfoActivity extends AppCompatActivity {
     private String androidId;
 
-    private TextView tv_Gps;
+//    private TextView tv_Gps;
 
     Button bt_quitSendGpsInfo;
 
@@ -43,7 +43,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_send_gps_info);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        tv_Gps = findViewById(R.id.tv_Gps);
+//        tv_Gps = findViewById(R.id.tv_Gps);
         bt_quitSendGpsInfo = findViewById(R.id.bt_quitSendGpsInfo);
 
         sendGpsNextStationTextView=findViewById(R.id.sendGpsNextStationTextView);
@@ -53,12 +53,12 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         Gps.getGps(getApplicationContext());
 
-        tv_Gps.setText(
-                "위도 : " + Gps.latitude + "\n" +
-                        "경도 : " + Gps.longitude + "\n" +
-                        "Accuracy : " + Gps.accuracy + "\n" +
-                        "Provider : " + Gps.gpsKinds + "\n"
-        );
+//        tv_Gps.setText(
+//                "위도 : " + Gps.latitude + "\n" +
+//                        "경도 : " + Gps.longitude + "\n" +
+//                        "Accuracy : " + Gps.accuracy + "\n" +
+//                        "Provider : " + Gps.gpsKinds + "\n"
+//        );
         // 5초마다 서버에 GpsInfo 보내기
         Intent sendGpsInfoIntent=getIntent();
         String isReboot=sendGpsInfoIntent.getStringExtra("isReboot");
@@ -103,13 +103,13 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     }
                     sendGpsNextStationTextView.setText("다음정거장 : " + gpsInfo.nextStationName);
                     sendGpsRemainingStationCountTextView.setText("남은정거장 개수 : "+gpsInfo.remainingStationCount);
-                    tv_Gps.setText(
-                            "위도 : " + Gps.latitude + "\n" +
-                                    "경도 : " + Gps.longitude + "\n" +
-                                    "Accuracy : " + Gps.accuracy + "\n" +
-                                    "Provider : " + Gps.gpsKinds + "\n"
-                    );
-                    Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
+//                    tv_Gps.setText(
+//                            "위도 : " + Gps.latitude + "\n" +
+//                                    "경도 : " + Gps.longitude + "\n" +
+//                                    "Accuracy : " + Gps.accuracy + "\n" +
+//                                    "Provider : " + Gps.gpsKinds + "\n"
+//                    );
+//                    Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
                 } else { // 통신 실패(응답 코드로 판단)
                     // 운행종료시 400 BAD_REQUEST이면 타이머 종료후 메인으로 이동
                     if(response.code()==400) {
@@ -119,7 +119,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
                         startActivity(mainIntent);
-                        Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -141,7 +141,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) { // 정상적으로 통신 성공
                     // 확인용 toast - 나중에 삭제 예정
-                    Toast.makeText(getApplicationContext(), "성공", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "안내를 종료합니다.", Toast.LENGTH_SHORT).show();
                     // 서버 전송 종료
                     timer.cancel(); //타이머객체 없애주고
                     SingletonTimer.singletonTimer=new Timer(); //새롭게 생성
@@ -154,7 +154,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     startActivity(mainIntent);
                 } else { // 통신 실패(응답 코드로 판단)
                     // 확인용 toast - 나중에 삭제 예정
-                    Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
                 }
             }
 

@@ -33,7 +33,7 @@ import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
-    public TextView textViewGPS;
+//    public TextView textViewGPS;
 
     Button startingPointButton;
     Button historyButton;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         startingPointButton = findViewById(R.id.startingPointButton);
         historyButton=findViewById(R.id.historyButton);
         favoriteButton=findViewById(R.id.favoriteButton);
-        textViewGPS = findViewById(R.id.textViewGPS);
+//        textViewGPS = findViewById(R.id.textViewGPS);
 
         mContext = this;
 
@@ -71,12 +71,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        textViewGPS.setText(
-                "위도 : " + Gps.latitude + "\n" +
-                        "경도 : " + Gps.longitude + "\n" +
-                        "Accuracy : " + Gps.accuracy + "\n" +
-                        "Provider : " + Gps.gpsKinds + "\n"
-        );
+//        textViewGPS.setText(
+//                "위도 : " + Gps.latitude + "\n" +
+//                        "경도 : " + Gps.longitude + "\n" +
+//                        "Accuracy : " + Gps.accuracy + "\n" +
+//                        "Provider : " + Gps.gpsKinds + "\n"
+//        );
 
         historyButton.setOnClickListener(view -> {
             Intent historyIntent= new Intent(this, HistoryActivity.class);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
                         String firebaseToken_msg = getString(R.string.msg_token_fmt, firebaseToken);
                         String androidId_msg=getString(R.string.android_id,androidId);
-                        showToast(firebaseToken_msg+"\n"+androidId_msg);
+//                        showToast(firebaseToken_msg+"\n"+androidId_msg);
                         sendDeviceInfo(SingletonRetrofit.getInstance(getApplicationContext()));
                     }
                 });
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("DEVELOP", t.toString());
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                 dialog.setTitle("알림!");
-                dialog.setMessage("통신에 실패했습니다.");
+                dialog.setMessage("통신에 실패했습니다.\n데이터를 키고 다시 시도해주세요.");
                 dialog.show();
             }
         });

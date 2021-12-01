@@ -68,12 +68,12 @@ public class Gps {
             Log.d("User_GPS","Update");
 
             //개발용 위도 체크
-            ((MainActivity)MainActivity.mContext).textViewGPS.setText(
-                    "위도 : " + Gps.latitude + "\n" +
-                            "경도 : " + Gps.longitude + "\n" +
-                            "Accuracy : " + Gps.accuracy + "\n" +
-                            "Provider : " + Gps.gpsKinds + "\n"
-            );
+//            ((MainActivity)MainActivity.mContext).textViewGPS.setText(
+//                    "위도 : " + Gps.latitude + "\n" +
+//                            "경도 : " + Gps.longitude + "\n" +
+//                            "Accuracy : " + Gps.accuracy + "\n" +
+//                            "Provider : " + Gps.gpsKinds + "\n"
+//            );
         }
     };
 

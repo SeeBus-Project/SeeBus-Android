@@ -147,7 +147,7 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
 
                         listData.station = stationNm.get(i);
                         listData.distAndStationNumberAndNextStationName =
-                                dist.get(i)+ "m | " +arsId.get(i)+" | "+nextStationName.get(i);
+                                dist.get(i)+ "m | " +arsId.get(i)+" | "+nextStationName.get(i)+" 방면";
 
                         listViewData.add(listData);
                     }
