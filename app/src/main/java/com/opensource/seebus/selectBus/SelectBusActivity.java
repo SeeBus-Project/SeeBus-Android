@@ -138,7 +138,6 @@ public class SelectBusActivity extends AppCompatActivity implements View.OnClick
             onBackPressed();
         }
         else if (v==homeBtn) {
-
             Intent mainIntent= new Intent(v.getContext(), MainActivity.class);
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
             mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성

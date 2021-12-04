@@ -36,7 +36,7 @@ public class Gps {
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if(location==null)
-            lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            location=lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         if (location.getAccuracy()<=25) {
             Gps.longitude = location.getLongitude();
