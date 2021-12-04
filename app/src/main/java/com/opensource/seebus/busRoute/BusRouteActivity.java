@@ -175,12 +175,12 @@ public class BusRouteActivity extends AppCompatActivity  implements View.OnClick
                 mRtNm = busNm;
                 mStartArsId = departureNo;
 
-                // history DB에 경로 insert 하기
-                mDBHelper.insertHistory(mRtNm, mStartArsId, departure, mDestinationArsId, mDestinationName);
-
                 CustomDialog customDialog=new CustomDialog(BusRouteActivity.this, new CustomDialogClickListener() {
                     @Override
                     public void onPositiveClick() {
+                        // history DB에 경로 insert 하기
+                        mDBHelper.insertHistory(mRtNm, mStartArsId, departure, mDestinationArsId, mDestinationName);
+
                         //EC2 신호전달(TCP)
                         ClientThread thread = new ClientThread();
                         thread.data[0] = "in";
