@@ -37,10 +37,17 @@
             android:text="처음으로"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/helpTextView"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:textSize="20dp"
-        />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/helpTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20dp"
+            />
+
+    </ScrollView>
+
 </LinearLayout>
