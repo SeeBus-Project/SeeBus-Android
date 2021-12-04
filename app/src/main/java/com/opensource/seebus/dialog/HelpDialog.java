@@ -48,6 +48,7 @@ public class HelpDialog extends Dialog {
         customDialogOKButton.setOnClickListener(v -> {
             // 확인버튼 클릭
             this.customDialogClickListener.onPositiveClick();
+            dismiss();
         });
         customDialogCancelButton.setOnClickListener(v -> {
             // 취소버튼 클릭

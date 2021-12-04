@@ -1,11 +1,9 @@
 package com.opensource.seebus.help;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.dialog.CustomDialogClickListener;
 import com.opensource.seebus.dialog.HelpDialog;
@@ -61,10 +59,7 @@ public class HelpActivity extends AppCompatActivity {
         HelpDialog helpDialog=new HelpDialog(HelpActivity.this, new CustomDialogClickListener() {
             @Override
             public void onPositiveClick() {
-                Intent mainIntent= new Intent(view.getContext(), MainActivity.class);
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
-                startActivity(mainIntent);
+                onBackPressed();
             }
 
             @Override
