@@ -17,10 +17,15 @@
         android:theme="@style/Theme.SeeBus"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".history.FavoriteActivity"
-            android:label="즐겨찾기"
-            android:exported="true"
+            android:name=".help.HelpActivity"
+            android:exported="false"
+            android:label="도움말"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".history.FavoriteActivity"
+            android:exported="true"
+            android:label="즐겨찾기"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".subService.Splash"
             android:exported="true"
@@ -33,33 +38,32 @@
         </activity>
         <activity
             android:name=".sendGpsInfo.SendGpsInfoActivity"
-            android:label="경로 안내"
             android:exported="true"
-            android:screenOrientation="portrait"/>
+            android:label="경로 안내"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".history.HistoryActivity"
             android:exported="true"
             android:label="최근 기록"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".startingPoint.StartingPointActivity"
             android:exported="false"
             android:label="출발 정류장 선택"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".selectBus.SelectBusActivity"
             android:exported="false"
             android:label="탑승할 버스 선택"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".busRoute.BusRouteActivity"
-            android:label="도착 정류장 선택"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:label="도착 정류장 선택"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"/>
-
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".firebase.MyFirebaseMessagingService"

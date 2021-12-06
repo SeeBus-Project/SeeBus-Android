@@ -10,7 +10,7 @@ import com.opensource.seebus.R;
 
 import androidx.annotation.NonNull;
 
-public class CustomDialog  extends Dialog{
+public class CustomDialog extends Dialog{
 
     private Context context;
     private CustomDialogClickListener customDialogClickListener;

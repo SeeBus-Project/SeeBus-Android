@@ -14,6 +14,7 @@ import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 import com.opensource.seebus.selectBus.SelectBusActivity;
 import com.opensource.seebus.subService.Gps;
+import com.opensource.seebus.util.MakeToast;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -81,27 +82,29 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
                 doc.getDocumentElement().normalize();
     //            System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
                 NodeList nList = doc.getElementsByTagName("itemList");
+                if(nList.getLength()==0) {
+                    return false;
+                } else {
+                    for (int temp = 0; temp < nList.getLength(); temp++) {
+                        Node nNode = nList.item(temp);
+                        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-                for(int temp = 0; temp < nList.getLength(); temp++){
-                    Node nNode = nList.item(temp);
-                    if(nNode.getNodeType() == Node.ELEMENT_NODE){
-
-                        Element eElement = (Element) nNode;
-    //                    System.out.println("######################");
-    //                    System.out.println(eElement.getTextContent());
-    //                    System.out.println("정류소고유번호 : " + getTagValue("arsId", eElement));
-    //                    System.out.println("거리 : " + getTagValue("dist", eElement));
-    //                    System.out.println("정류소 ID : " + getTagValue("stationId", eElement));
-    //                    System.out.println("정류소명 : " + getTagValue("stationNm", eElement));
-    //                    System.out.println("정류소타입 : " + getTagValue("stationTp", eElement));
-                        arsId.add(getTagValue("arsId",eElement));
-                        dist.add(getTagValue("dist",eElement));
-                        stationId.add(getTagValue("stationId",eElement));
-                        stationNm.add(getTagValue("stationNm",eElement));
-                        stationTp.add(getTagValue("stationTp",eElement));
+                            Element eElement = (Element) nNode;
+                            //                    System.out.println("######################");
+                            //                    System.out.println(eElement.getTextContent());
+                            //                    System.out.println("정류소고유번호 : " + getTagValue("arsId", eElement));
+                            //                    System.out.println("거리 : " + getTagValue("dist", eElement));
+                            //                    System.out.println("정류소 ID : " + getTagValue("stationId", eElement));
+                            //                    System.out.println("정류소명 : " + getTagValue("stationNm", eElement));
+                            //                    System.out.println("정류소타입 : " + getTagValue("stationTp", eElement));
+                            arsId.add(getTagValue("arsId", eElement));
+                            dist.add(getTagValue("dist", eElement));
+                            stationId.add(getTagValue("stationId", eElement));
+                            stationNm.add(getTagValue("stationNm", eElement));
+                            stationTp.add(getTagValue("stationTp", eElement));
+                        }
                     }
                 }
-
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("오류입니다.");
@@ -116,43 +119,48 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
                     Document doc = dBuilder.parse(getStationByUidItemUrl);
 
                     doc.getDocumentElement().normalize();
-    //                System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
+                    //                System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
                     NodeList nList = doc.getElementsByTagName("itemList");
-
-                    Node nNode = nList.item(0);
-                    if(nNode.getNodeType() == Node.ELEMENT_NODE){
-
-                        Element eElement = (Element) nNode;
-    //                    System.out.println("######################");
-    //                    System.out.println(eElement.getTextContent());
-    //                    System.out.println("다음 정류장 : " + getTagValue("nxtStn",eElement));
-                        nextStationName.add(getTagValue("nxtStn",eElement));
+                    if (nList.getLength() == 0) {
+                        return false;
+                    } else {
+                        Node nNode = nList.item(0);
+                        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                            Element eElement = (Element) nNode;
+                            //                    System.out.println("######################");
+                            //                    System.out.println(eElement.getTextContent());
+                            //                    System.out.println("다음 정류장 : " + getTagValue("nxtStn",eElement));
+                            nextStationName.add(getTagValue("nxtStn", eElement));
+                        }
                     }
-
                 }
             } catch(Exception e) {
                 e.printStackTrace();
                 System.out.println("오류입니다.");
             }
-            return false;
+            return true;
         })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((result)->{
-                    ArrayList<StartingPointListData> listViewData = new ArrayList<>();
+                    if(result==true) {
+                        ArrayList<StartingPointListData> listViewData = new ArrayList<>();
 
-                    // 정류장 갯수 10개로 고정
-                    for (int i=0; i<stationNm.size() && i<10; i++) {
-                        StartingPointListData listData = new StartingPointListData();
+                        // 정류장 갯수 10개로 고정
+                        for (int i = 0; i < stationNm.size() && i < 10; i++) {
+                            StartingPointListData listData = new StartingPointListData();
 
-                        listData.station = stationNm.get(i);
-                        listData.distAndStationNumberAndNextStationName =
-                                dist.get(i)+ "m | " +arsId.get(i)+" | "+nextStationName.get(i)+" 방면";
+                            listData.station = stationNm.get(i);
+                            listData.distAndStationNumberAndNextStationName =
+                                    dist.get(i) + "m | " + arsId.get(i) + " | " + nextStationName.get(i) + " 방면";
 
-                        listViewData.add(listData);
+                            listViewData.add(listData);
+                        }
+                        ListAdapter oAdapter = new StartingPointCustomView(listViewData);
+                        listView.setAdapter(oAdapter);
+                    } else {
+                        MakeToast.makeToast(getApplicationContext(),"지원하지 않는 위치입니다.").show();
                     }
-                    ListAdapter oAdapter = new StartingPointCustomView(listViewData);
-                    listView.setAdapter(oAdapter);
                     progressBar.setVisibility(View.GONE);
                 });
 

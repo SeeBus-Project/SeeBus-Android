@@ -6,13 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.opensource.seebus.help.HelpActivity;
 import com.opensource.seebus.history.FavoriteActivity;
 import com.opensource.seebus.history.HistoryActivity;
 import com.opensource.seebus.sendDeviceInfo.SendDeviceInfoRequestDto;
@@ -22,6 +24,7 @@ import com.opensource.seebus.sendGpsInfo.SendGpsInfoActivity;
 import com.opensource.seebus.singleton.SingletonRetrofit;
 import com.opensource.seebus.startingPoint.StartingPointActivity;
 import com.opensource.seebus.subService.Gps;
+import com.opensource.seebus.util.MakeToast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -43,6 +46,23 @@ public class MainActivity extends AppCompatActivity {
     String androidId;
 
     public static Context mContext;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main_action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id== R.id.actionHelpText) {
+            Intent helpIntent = new Intent(this, HelpActivity.class);
+            startActivity(helpIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +136,12 @@ public class MainActivity extends AppCompatActivity {
     }
   
     private void goStartingPointActivity() {
-        Intent startingPointIntent = new Intent(this, StartingPointActivity.class);
-        startActivity(startingPointIntent);
+        if(Gps.longitude!=0.0&&Gps.latitude!=0.0) {
+            Intent startingPointIntent = new Intent(this, StartingPointActivity.class);
+            startActivity(startingPointIntent);
+        } else {
+            MakeToast.makeToast(getApplicationContext(),"위치를 받아오는 중입니다.").show();
+        }
     }
 
     @Override
