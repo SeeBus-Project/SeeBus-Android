@@ -3,14 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/drawable-v24/background_splash.xml" value="0.14583333333333334" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14583333333333334" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/drawable/ic_launcher_background.xml" value="0.14583333333333334" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_bus_route.xml" value="0.25364583333333335" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_help.xml" value="0.176" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_history.xml" value="0.1296875" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_main_action_bar.xml" value="0.25364583333333335" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_select_bus.xml" value="0.25364583333333335" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/activity_starting_point.xml" value="0.2390625" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_bus_route.xml" value="0.25364583333333335" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_dialog.xml" value="0.176" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_history.xml" value="0.264" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_select_bus.xml" value="0.25364583333333335" />
         <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/custom_starting_point.xml" value="0.25364583333333335" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/help_dialog.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/layout/network_dialog.xml" value="0.23641304347826086" />
+        <entry key="..\:/AndroidProjects/SeeBus/app/src/main/res/menu/activity_main_action_bar.xml" value="0.264" />
         <entry key="..\:/Users/PWork/Desktop/OpenSource_SeeBus/SeeBus-Android/app/src/main/res/drawable-v24/background_splash.xml" value="0.21875" />
         <entry key="..\:/Users/PWork/Desktop/OpenSource_SeeBus/SeeBus-Android/app/src/main/res/layout/activity_bus_route.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/PWork/Desktop/OpenSource_SeeBus/SeeBus-Android/app/src/main/res/layout/activity_favorite.xml" value="0.20677083333333332" />

@@ -85,7 +85,7 @@ public class StartingPointActivity extends AppCompatActivity implements View.OnC
                 if(nList.getLength()==0) {
                     return false;
                 } else {
-                    for (int temp = 0; temp < nList.getLength(); temp++) {
+                    for (int temp = 0; temp < nList.getLength() && temp<10; temp++) {
                         Node nNode = nList.item(temp);
                         if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 

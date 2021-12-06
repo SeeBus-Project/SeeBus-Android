@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.opensource.seebus.dialog.CustomDialogClickListener;
+import com.opensource.seebus.dialog.NetworkDialog;
 import com.opensource.seebus.help.HelpActivity;
 import com.opensource.seebus.history.FavoriteActivity;
 import com.opensource.seebus.history.HistoryActivity;
@@ -27,7 +29,6 @@ import com.opensource.seebus.subService.Gps;
 import com.opensource.seebus.util.MakeToast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -112,7 +113,11 @@ public class MainActivity extends AppCompatActivity {
 
         // 안드로이드 아이디
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         //푸시알림
         //파이어베이스 토큰
         FirebaseMessaging.getInstance().getToken()
@@ -134,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-  
+
     private void goStartingPointActivity() {
         if(Gps.longitude!=0.0&&Gps.latitude!=0.0) {
             Intent startingPointIntent = new Intent(this, StartingPointActivity.class);
@@ -170,10 +175,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SendDeviceInfoResponseDto> call, Throwable t) {
                 Log.d("DEVELOP", t.toString());
-                AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                dialog.setTitle("알림!");
-                dialog.setMessage("통신에 실패했습니다.\n데이터를 키고 다시 시도해주세요.");
-                dialog.show();
+                NetworkDialog networkDialog=new NetworkDialog(MainActivity.this, new CustomDialogClickListener() {
+                    @Override
+                    public void onPositiveClick() {
+                        sendDeviceInfo(SingletonRetrofit.getInstance(getApplicationContext()));
+                    }
+
+                    @Override
+                    public void onNegativeClick() {
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                });
+                networkDialog.setCanceledOnTouchOutside(false);
+                networkDialog.setCancelable(false);
+                networkDialog.show();
             }
         });
     }
