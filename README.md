@@ -8,6 +8,9 @@
 * **목적**: 시각 장애인의 버스 이용의 불편함 해소
 * **형태**: 애플리케이션
 
+![앱 구성도](https://user-images.githubusercontent.com/76698276/144884050-b431eee4-794e-47c0-8615-243d15f381b7.JPG)
+
+
 # 사용 매뉴얼
 > ## 홈화면
 > ![image](https://user-images.githubusercontent.com/76698276/144880038-8d651cb2-aead-49cd-8377-2af1333ba8e1.png)
