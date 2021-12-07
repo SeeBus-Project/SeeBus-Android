@@ -8,8 +8,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Log;
 
-import com.opensource.seebus.MainActivity;
-
 import androidx.core.app.ActivityCompat;
 
 public class Gps {
@@ -64,8 +62,7 @@ public class Gps {
                 Gps.accuracy = location.getAccuracy();
                 Gps.gpsKinds = location.getProvider();
             }
-
-            Log.d("User_GPS","Update");
+            Log.d("GPS_UPDATE", longitude + ", " + latitude + "," + accuracy);
 
             //개발용 위도 체크
 //            ((MainActivity)MainActivity.mContext).textViewGPS.setText(
