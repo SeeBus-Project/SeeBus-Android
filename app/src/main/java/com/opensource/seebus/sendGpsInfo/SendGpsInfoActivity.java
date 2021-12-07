@@ -164,8 +164,8 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
                     startActivity(mainIntent);
-//                    //서비스 자동종료
-//                    stopLocationService();
+                    //서비스 자동종료
+                    stopLocationService();
                 } else { // 통신 실패(응답 코드로 판단)
                     // 확인용 toast - 나중에 삭제 예정
 //                    Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
