@@ -48,7 +48,7 @@
 
 
 > ## 설치방법
-> 핸드폰에서 Chrome으로 깃허브의 SeeBus-Android 접속 후 아래 사진대로 다운로드
+> 핸드폰에서 Chrome으로 깃허브의 SeeBus-Android 접속 후 아래 사진대로 **SeeBus.apk**다운로드
 > 
 > **[1]**
 > ![image](https://user-images.githubusercontent.com/76698276/144896313-4759c338-729e-47b8-81b3-a98ae43ebfc6.png)
