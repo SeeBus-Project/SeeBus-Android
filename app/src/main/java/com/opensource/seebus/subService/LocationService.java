@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.opensource.seebus.MainActivity;
 import com.opensource.seebus.R;
 
 import androidx.annotation.Nullable;
@@ -51,7 +52,7 @@ public class LocationService extends Service {
     private void startLocationService() {
         String channelId = "Location_Channel";
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent resultIntent = new Intent();
+        Intent resultIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId);
         builder.setSmallIcon(R.mipmap.seebus_icon);
@@ -60,7 +61,7 @@ public class LocationService extends Service {
         builder.setContentText("경로 안내중");
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(false);
-        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+        builder.setPriority(NotificationCompat.PRIORITY_LOW);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager != null && notificationManager.getNotificationChannel(channelId) == null) {
@@ -101,6 +102,6 @@ public class LocationService extends Service {
                 }
             }
         }
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY; //강제종료해도 다시시작
     }
 }

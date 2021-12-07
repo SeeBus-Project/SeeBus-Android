@@ -1,10 +1,12 @@
 package com.opensource.seebus.sendGpsInfo;
 
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,6 +20,7 @@ import com.opensource.seebus.singleton.SingletonRetrofit;
 import com.opensource.seebus.singleton.SingletonTimer;
 import com.opensource.seebus.subService.LocationService;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -83,7 +86,6 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         // "안내 종료" 버튼 누르면 서버 전송 종료 후 홈화면으로 돌아가기
         bt_quitSendGpsInfo.setOnClickListener(view -> {
             sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),SingletonTimer.getInstance(getApplicationContext()));
-            stopLocationService();
         });
     }
 
@@ -118,10 +120,18 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     if(response.code()==400) {
                         timer.cancel();
                         SingletonTimer.singletonTimer=new Timer(); //새롭게 생성
-                        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
-                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
-                        startActivity(mainIntent);
+                        //서비스 자동종료
+                        stopLocationService();
+                        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+                        List<ActivityManager.RunningTaskInfo> info = manager.getRunningTasks(1);
+                        ComponentName componentName= info.get(0).topActivity;
+                        String ActivityName = componentName.getShortClassName().substring(1);
+                        if(ActivityName.equals("sendGpsInfo.SendGpsInfoActivity")) {
+                            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
+                            mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
+                            startActivity(mainIntent);
+                        }
 //                        Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -149,12 +159,13 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     timer.cancel(); //타이머객체 없애주고
                     SingletonTimer.singletonTimer=new Timer(); //새롭게 생성
                     //이렇게 하면 timer객체는 단 한번만 생성된다.
-
                     // 홈화면으로 돌아가기
                     Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
                     startActivity(mainIntent);
+//                    //서비스 자동종료
+//                    stopLocationService();
                 } else { // 통신 실패(응답 코드로 판단)
                     // 확인용 toast - 나중에 삭제 예정
 //                    Toast.makeText(getApplicationContext(), "실패(응답 코드)", Toast.LENGTH_SHORT).show();
