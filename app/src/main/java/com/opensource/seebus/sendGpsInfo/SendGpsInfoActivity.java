@@ -101,6 +101,8 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                     if(gpsInfo.isArrived==true) {
                         timer.cancel();
                         SingletonTimer.singletonTimer=new Timer(); //새롭게 생성
+                        //서비스 자동종료
+                        stopLocationService();
                         Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존의 액티비티 삭제
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 새로운 액티비티 생성
