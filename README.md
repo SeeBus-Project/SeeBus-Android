@@ -19,19 +19,19 @@
 
 
 > ## 경로 설정
-> ![image](https://user-images.githubusercontent.com/76698276/144880725-be04a904-a066-469a-8f3b-9cf466f5a388.png)
+> ![image](https://user-images.githubusercontent.com/76698276/145057915-199a6744-395c-4d62-bc79-da721a64fba0.png)
 
 
 > ## 경로 안내
-> ![image](https://user-images.githubusercontent.com/76698276/144881277-8e3bf461-b629-4b00-9804-1ed6059bb286.png)
+> ![image](https://user-images.githubusercontent.com/76698276/145057955-f86893c9-7f07-4159-b00d-ab25261bb1d8.png)
 
 
 > ## 최근 기록
-> ![image](https://user-images.githubusercontent.com/76698276/144881660-742d782a-69ad-40f4-800a-8e772c6eb13e.png)
+> ![image](https://user-images.githubusercontent.com/76698276/145058009-8cba9cac-5b1d-4133-9efd-0ef2e8c1eb87.png)
 
 
 > ## 즐겨찾기
-> ![image](https://user-images.githubusercontent.com/76698276/144882004-a7daf3d0-9b10-4434-8298-a1b5afe71916.png)
+> ![image](https://user-images.githubusercontent.com/76698276/145058053-d447f7fb-4dca-4193-b3a6-6e6fbbc88c21.png)
 
 
 > ## 도움말
@@ -44,7 +44,7 @@
 > ## 권장사항
 > 1. 안드로이드의 TTS 서비스 TalkBack 기능을 키고 함께 사용하기를 권장합니다.
 > 2. SeeBus 앱은 서울 안에서만 서비스를 제공합니다.
-> 3. 자세한 프로젝트 설명 및 사용 방법은 이 레포지토리에 올라와 있는 **'SeeBus 사용 매뉴얼.pdf'** 를 참고해주세요.
+> 3. 자세한 프로젝트 설명 및 사용 방법은 이 레포지토리에 올라와 있는 **'SeeBus_사용매뉴얼.pdf'** 를 참고해주세요.
 
 
 > ## 설치방법
@@ -61,6 +61,13 @@
 > **[5]**
 > ![image](https://user-images.githubusercontent.com/76698276/144896431-ed0aecb4-bcc9-4f74-8a91-40b4b6735655.png)
 
+
+
+# 개발자
+> * 김하영
+> * 박창현
+> * 정태운
+> * 조수현
 
 
 
