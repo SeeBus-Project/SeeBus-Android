@@ -1,5 +1,7 @@
 package com.opensource.seebus.sendGpsInfo;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,7 +16,7 @@ import com.opensource.seebus.sendGuideExit.SendGuideExitRequestDto;
 import com.opensource.seebus.sendGuideExit.SendGuideExitService;
 import com.opensource.seebus.singleton.SingletonRetrofit;
 import com.opensource.seebus.singleton.SingletonTimer;
-import com.opensource.seebus.subService.Gps;
+import com.opensource.seebus.subService.LocationService;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,8 +27,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import static com.opensource.seebus.subService.Gps.latitude;
-import static com.opensource.seebus.subService.Gps.longitude;
+import static com.opensource.seebus.subService.LocationService.serviceLatitude;
+import static com.opensource.seebus.subService.LocationService.serviceLongitude;
 
 public class SendGpsInfoActivity extends AppCompatActivity {
     private String androidId;
@@ -51,7 +53,7 @@ public class SendGpsInfoActivity extends AppCompatActivity {
 
         // androidId, longitude, latitude 값 할당
         androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        Gps.getGps(getApplicationContext());
+        startLocationService();
 
 //        tv_Gps.setText(
 //                "위도 : " + Gps.latitude + "\n" +
@@ -81,12 +83,13 @@ public class SendGpsInfoActivity extends AppCompatActivity {
         // "안내 종료" 버튼 누르면 서버 전송 종료 후 홈화면으로 돌아가기
         bt_quitSendGpsInfo.setOnClickListener(view -> {
             sendGuideExit(SingletonRetrofit.getInstance(getApplicationContext()),SingletonTimer.getInstance(getApplicationContext()));
+            stopLocationService();
         });
     }
 
     private void SendGpsInfo(Retrofit retrofit,Timer timer) {
         SendGpsInfoService sendGpsInfoService = retrofit.create(SendGpsInfoService.class);
-        Call<SendGpsInfoResponseDto> call = sendGpsInfoService.requestSendGps(new SendGpsInfoRequestDto(androidId, latitude, longitude));
+        Call<SendGpsInfoResponseDto> call = sendGpsInfoService.requestSendGps(new SendGpsInfoRequestDto(androidId, serviceLatitude, serviceLongitude));
 
         call.enqueue(new Callback<SendGpsInfoResponseDto>() {
             @Override
@@ -164,5 +167,36 @@ public class SendGpsInfoActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "데이터를 켜주세요.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private boolean isLocationServiceRunning() {
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (activityManager != null) {
+            for (ActivityManager.RunningServiceInfo service : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+                if (LocationService.class.getName().equals(service.service.getClassName())) {
+                    if (service.foreground) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private void startLocationService() {
+        if (!isLocationServiceRunning()) {
+            Intent intent = new Intent(getApplicationContext(), LocationService.class);
+            intent.setAction("Start");
+            startService(intent);
+        }
+    }
+
+    private void stopLocationService() {
+        if (isLocationServiceRunning()) {
+            Intent intent = new Intent(getApplicationContext(), LocationService.class);
+            intent.setAction("Stop");
+            startService(intent);
+        }
     }
 }
