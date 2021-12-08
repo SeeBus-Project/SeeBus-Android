@@ -7,6 +7,7 @@
 * **대상**: 시각 장애인
 * **목적**: 시각 장애인의 버스 이용의 불편함 해소
 * **형태**: 애플리케이션
+* **앱 다운로드 링크**: https://drive.google.com/file/d/1L_JYk2fUDIv4ocxsH1OdH60ZhynL5nWY/view?usp=sharing
 
 ![앱 구성도](https://user-images.githubusercontent.com/76698276/144884050-b431eee4-794e-47c0-8615-243d15f381b7.JPG)
 
